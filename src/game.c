@@ -6,6 +6,7 @@
 void ask_where_to_go();
 void fight();
 void shop();
+void pokecenter();
 
 void ask_name(char *name) {
 
@@ -28,6 +29,7 @@ void execute_choice(int choice2) {
         shop();
     } else if (choice2 == 3) {
         write(1, "POKECENTER\n", 11);
+        pokecenter();
     } else if (choice2 == 4) {
         write(1, "GOODBYE\n", 8);
         exit(0);
