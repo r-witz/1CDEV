@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include <unistd.h>
+#include <stdlib.h>
 
 
 void ask_where_to_go();
@@ -7,25 +7,32 @@ void ask_where_to_go();
 
 void shop() {
     int choice3;
-    write(1, "+---------------------------------------+\n" , 43);
-    write(1, "|What would you want to buy ?           |\n", 43);
-    write(1, "|    1. Potion (+5 HP) -> 100 SC        |\n", 43);
-    write(1, "|    2. Super potion (+10 HP) -> 300 SC |\n", 43);
-    write(1, "|    3. Rare candy (+1 LVL) -> 700 SC   |\n", 43);
-    write(1, "|    4. Leave the shop                  |\n", 43);    
-    write(1, "+---------------------------------------+\n" , 43);
-    write(1, "1, 2 or 3 : ", 12);
+    char quantity[999];
+    printf("+---------------------------------------+\n");
+    printf("|What would you want to buy ?           |\n");
+    printf("|    1. Potion (+5 HP) -> 100 SC        |\n");
+    printf("|    2. Super potion (+10 HP) -> 300 SC |\n");
+    printf("|    3. Rare candy (+1 LVL) -> 700 SC   |\n");
+    printf("|    4. Leave the shop                  |\n");    
+    printf("+---------------------------------------+\n");
+    printf("1, 2 or 3 : ");
     scanf("%d", &choice3);
     if (choice3 == 1) {
-        write(1, "You bought a Potion\n", 21);
+        printf("How many do you want to buy ? ");
+        scanf("%s", quantity);
+        printf("You bought %s Potions\n", quantity);
     } else if (choice3 == 2) {
-        write(1, "You bought a Super potion\n", 27);
+        printf("How many do you want to buy ? ");
+        scanf("%s", quantity);
+        printf("You bought %s Super Potions\n", quantity);
     } else if (choice3 == 3) {
-        write(1, "You bought a Rare candy\n", 25);
+        printf("How many do you want to buy ? ");
+        scanf("%s", quantity);
+        printf("You bought %s Rare Candy\n", quantity);
     } else if (choice3 == 4) {
-        write(1, "You left the shop\n", 18);
+        printf("You left the shop\n");
         ask_where_to_go();
     } else {
-        write(1, "Invalid choice\n", 16);
+        printf("Invalid choice\n");
     }
 }
