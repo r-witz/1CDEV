@@ -7,10 +7,9 @@
 
 #define MAX_MOVES 2
 
-Supemon *parseJSON(const char *supemonFilename, const char *moveFilename,
-                   int id) {
+Supemon *getSupemonByID(int id) {
 
-  FILE *supemonFile = fopen(supemonFilename, "r");
+  FILE *supemonFile = fopen("backup/supemon.json", "r");
   if (!supemonFile) {
     perror("Error opening Supemon file");
     return NULL;
@@ -91,7 +90,7 @@ Supemon *parseJSON(const char *supemonFilename, const char *moveFilename,
         i++;
       }
 
-      FILE *moveFile = fopen(moveFilename, "r");
+      FILE *moveFile = fopen("backup/move.json", "r");
       if (!moveFile) {
         perror("Error opening Move file");
         cJSON_Delete(supemonRoot);
@@ -204,35 +203,4 @@ void freeSupemon(Supemon *ptrSupemon) {
       }
     }
     free(ptrSupemon);
-}
-
-int main() {
-  const char *supemonFilename = "backup/supemon.json";
-  const char *moveFilename = "backup/move.json";
-  int id = 1;
-  Supemon *supemon = parseJSON(supemonFilename, moveFilename, id);
-  if (supemon) {
-    printf("Name: %s\n", supemon->name);
-    printf("HP: %d\n", supemon->hp);
-    printf("Attack: %d\n", supemon->attack);
-    printf("Defense: %d\n", supemon->defense);
-    printf("Evasion: %d\n", supemon->evasion);
-    printf("Accuracy: %d\n", supemon->accuracy);
-    printf("Speed: %d\n", supemon->speed);
-    printf("Moves:\n");
-    for (int i = 0; i < MAX_MOVES; ++i) {
-      if (supemon->moves[i]) {
-        Move *move = supemon->moves[i];
-        printf("  Move %d:\n", i + 1);
-        printf("    Name: %s\n", move->name);
-        printf("    Damage: %d\n", move->damage);
-        printf("    Attack Bonus: %d\n", move->attack_bonus);
-        printf("    Defense Bonus: %d\n", move->defense_bonus);
-        printf("    Evasion Bonus: %d\n", move->evasion_bonus);
-      }
-    }
-
-    freeSupemon(supemon);
-  }
-  return 0;
 }
