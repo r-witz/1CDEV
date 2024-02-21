@@ -1,0 +1,42 @@
+[
+    {   
+        "id": 1,
+        "name": "Scratch",
+        "damage": 3,
+        "attack_bonus": 0,
+        "defense_bonus": 0,
+        "evasion_bonus": 0
+    },
+    {   
+        "id": 2,
+        "name": "Grawl",
+        "damage": 0,
+        "attack_bonus": 1,
+        "defense_bonus": 0,
+        "evasion_bonus": 0
+    },
+    {   
+        "id": 3,
+        "name": "Pound",
+        "damage": 2,
+        "attack_bonus": 0,
+        "defense_bonus": 0,
+        "evasion_bonus": 0
+    },
+    {   
+        "id": 4,
+        "name": "Foliage",
+        "damage": 0,
+        "attack_bonus": 0,
+        "defense_bonus": 0,
+        "evasion_bonus": 1
+    },
+    {   
+        "id": 5,
+        "name": "Shell",
+        "damage": 0,
+        "attack_bonus": 0,
+        "defense_bonus": 1,
+        "evasion_bonus": 0
+    }
+]

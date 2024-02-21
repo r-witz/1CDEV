@@ -1,0 +1,35 @@
+[   
+    {
+        "id": 1,
+        "name": "Supmander",
+        "hp": 10,
+        "attack": 1,
+        "defense": 1,
+        "evasion": 1,
+        "accuracy": 2,
+        "speed": 1,
+        "moves": [1, 2]
+    },
+    {
+        "id": 2,
+        "name": "Supasaur",
+        "hp": 9,
+        "attack": 1,
+        "defense": 1,
+        "evasion": 3,
+        "accuracy": 2,
+        "speed": 2,
+        "moves": [3, 4]
+    },
+    {
+        "id": 3,
+        "name": "Supirtle",
+        "hp": 11,
+        "attack": 1,
+        "defense": 2,
+        "evasion": 2,
+        "accuracy": 1,
+        "speed": 2,
+        "moves": [3, 5]
+    }
+]
