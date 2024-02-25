@@ -6,6 +6,7 @@
 
 void empty_buffer();
 
+
 Supemon *getSupemonByID(int id);
 
 int ask_supemon() {
@@ -27,7 +28,6 @@ int ask_supemon() {
 
         if (strcmp(choice, "1") == 0) {
             (&player)->supemons[0] = getSupemonByID(1);
-            // print the list of supemons
             printf("You chose %s\n", (&player)->supemons[0]->name);
         } else if (strcmp(choice, "2") == 0) {
             (&player)->supemons[1] = getSupemonByID(2);
@@ -37,8 +37,5 @@ int ask_supemon() {
             write(1, "INCORRECT\n", 10);
         }
        } while (strcmp(choice, "1") != 0 && strcmp(choice, "2") != 0 && strcmp(choice, "3") != 0);
-        write(1, "You chose your Supemon\n", 23);
-        write(1, "Press enter to continue\n", 24);
-        empty_buffer();
     return 0;
 }
