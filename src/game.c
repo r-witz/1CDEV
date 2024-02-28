@@ -1,20 +1,31 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <string.h>
+#include <stdlib.h>
 
 #include "../include/player.h"
+Supemon *getSupemonByID(int id);
 
-void ask_name(char *name) {
-    Player player;
-    char buffer[100];
+#define NAME_MAX_LENGTH 50
 
-    write(1, "Hello ! What's your name? ", 26);
-    fgets(buffer, sizeof(buffer), stdin);
-    buffer[strcspn(buffer, "\n")] = '\0';
-    strncpy(name, buffer, sizeof(buffer));
-    (&player)->name = name;
+void ask_name(Player *ptrPlayer) {
+    char name[NAME_MAX_LENGTH];
+
+    do {
+        write(1, "What's your name? ", 18);
+        fgets(name, sizeof(name), stdin);
+        name[strcspn(name, "\n")] = '\0';
+
+        if (strlen(name) == 0) {
+            write(1, "Please enter a valid name.\n", 27);
+            continue;
+        }
+
+        ptrPlayer->name = (char*)malloc(strlen(name) + 1);
+        strcpy(ptrPlayer->name, name);
+    } while (strlen(name) == 0);
+    
     write(1, "Welcome in Supemon World ! ", 28);
-    write(1, name, strlen(name));
+    write(1, ptrPlayer->name, strlen(ptrPlayer->name));
     write(1, "\n", 1); 
 }
-    

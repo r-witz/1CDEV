@@ -2,16 +2,13 @@
 #include <unistd.h>
 #include <string.h>
 
-#include "../include/player.h"
+#include "../include/starter.h"
 
 void empty_buffer();
-
-
 Supemon *getSupemonByID(int id);
 
-int ask_supemon() {
-    Player player;
-    char choice[2];
+int ask_supemon(Player *ptrPlayer) {
+    char choice[3];
     char buffer[100];
 
     do {
@@ -22,20 +19,20 @@ int ask_supemon() {
         write(1, "|    3. Supirtle      |\n", 24);
         write(1, "+---------------------+\n" , 24);
         write(1, "1, 2 or 3 : ", 12);
+
         fgets(buffer, sizeof(buffer), stdin);
         buffer[strcspn(buffer, "\n")] = '\0';
         strncpy(choice, buffer, sizeof(choice));
+        choice[sizeof(choice) - 1] = '\0';
 
-        if (strcmp(choice, "1") == 0) {
-            (&player)->supemons[0] = getSupemonByID(1);
-            printf("You chose %s\n", (&player)->supemons[0]->name);
-        } else if (strcmp(choice, "2") == 0) {
-            (&player)->supemons[1] = getSupemonByID(2);
-        } else if (strcmp(choice, "3") == 0) {
-            (&player)->supemons[2] = getSupemonByID(3);
-        } else {
+        ptrPlayer->supemons[0] =    strcmp(choice, "1") == 0 ? getSupemonByID(1) :
+                                    strcmp(choice, "2") == 0 ? getSupemonByID(2) :
+                                    strcmp(choice, "3") == 0 ? getSupemonByID(3) : NULL;
+
+        if (ptrPlayer->supemons[0] == NULL) {
             write(1, "INCORRECT\n", 10);
         }
-       } while (strcmp(choice, "1") != 0 && strcmp(choice, "2") != 0 && strcmp(choice, "3") != 0);
+    } while (strcmp(choice, "1") != 0 && strcmp(choice, "2") != 0 && strcmp(choice, "3") != 0);
+    printf("You chose %s\n", ptrPlayer->supemons[0]->name);
     return 0;
 }

@@ -21,6 +21,24 @@ void freePlayer(Player *player) {
     free(player);
 }
 
+Player *createPlayer() {
+    Player *player = malloc(sizeof(Player));
+    if (!player) {
+        perror("Memory allocation failed");
+        return NULL;
+    }
+
+    player->money = 0;
+    player->potions = 0;
+    player->super_potions = 0;
+    player->rare_candy = 0;
+    player->selected_supemon = 0;
+    for (int i=0; i<6; i++) {
+        player->supemons[i] = NULL;
+    }
+
+    return player;
+}
 
 void savePlayer(const char *filename, Player *player) {
     cJSON *root = cJSON_CreateObject();

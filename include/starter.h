@@ -1,3 +1,5 @@
-#pragma once 
+#pragma once
 
-int ask_supemon();
+#include "../include/player.h"
+
+int ask_supemon(Player *ptrPlayer);

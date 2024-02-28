@@ -1,3 +1,5 @@
 #pragma once
 
-void pokecenter();
+#include "../include/player.h"
+
+void pokecenter(Player *ptrPlayer);

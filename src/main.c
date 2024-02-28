@@ -1,12 +1,11 @@
 #include "../include/menu.h"
-#include "../include/starter.h"
-#include "../include/game.h"
+#include "../include/player.h"
+
 
 int main()
-{
-    char name[100];
-    ask_name(name);
-    ask_supemon();
-    ask_where_to_go();
+{   
+    welcome();
+    Player *ptrPlayer = ask_new_game();
+    ask_where_to_go(ptrPlayer);
     return 0;
 }

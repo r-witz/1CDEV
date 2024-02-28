@@ -3,11 +3,13 @@
 #include <unistd.h>
 #include <string.h>
 
+#include "../include/player.h"
+
 void ask_where_to_go();
 void buy();
 void sell();
 
-void shop() {
+void shop(Player *ptrPlayer) {
     char choice3[2];
     char buffer[100];
 
