@@ -6,7 +6,7 @@
 
 #include "../include/player.h"
 
-void ask_where_to_go();
+void ask_where_to_go(Player *ptrPlayer);
 Supemon *getSupemonByID(int id);
 void empty_buffer();
 
@@ -15,6 +15,7 @@ void displaySupemonStats(Player *ptrPlayer, Supemon *enemy);
 void fight(Player *ptrPlayer) {
     int choiceAttack, choice4; 
     Supemon *enemy = NULL;
+    char buffer[100];
 
     do {
         if (enemy == NULL) {
@@ -33,7 +34,9 @@ void fight(Player *ptrPlayer) {
         write(1, "|    5. Run away             |\n", 32);
         write(1, "+----------------------------+\n" , 32);
         write(1, "1, 2, 3, 4 or 5: ", 18);
-        scanf("%d", &choice4);
+        fgets(buffer, sizeof(buffer), stdin);
+        sscanf(buffer, "%d", &choice4);
+        write(1, "\n", 1);
 
         if (choice4 == 1) {
             write(1, "\n1 - Scratch\n", 14);
@@ -81,7 +84,11 @@ void fight(Player *ptrPlayer) {
                     write(1, ")\n", 2);
                 }
             }
-            scanf("%d", &choiceAttack);
+            char choice4[100];
+            fgets(buffer, sizeof(buffer), stdin);
+            buffer[strcspn(buffer, "\n")] = '\0';
+            strncpy(choice4, buffer, sizeof(choice4) - 1);
+
             if (1 <= choiceAttack && choiceAttack <= 6) {
                 if (ptrPlayer->supemons[choiceAttack - 1] != NULL) {
                     ptrPlayer->supemons[0] = ptrPlayer->supemons[choiceAttack - 1];
@@ -113,7 +120,9 @@ void fight(Player *ptrPlayer) {
                 write(1, "4. Cancel\n", 10);
                 write(1, "1, 2, 3 or 4: ", 14);
                 int choiceItem;
-                scanf("%d", &choiceItem);
+                fgets(buffer, sizeof(buffer), stdin);
+                sscanf(buffer, "%d", &choiceItem);
+                write(1, "\n", 1);
                 if (choiceItem == 1) {
                     if (ptrPlayer->potions > 0) {
                         ptrPlayer->potions -= 1;
@@ -177,11 +186,15 @@ void fight(Player *ptrPlayer) {
                 } else {
                     write(1, "Your team is full. Do you want to replace a supemon? (Y/N): ", 59);
                     char choice;
-                    scanf(" %c", &choice);
+                    fgets(buffer, sizeof(buffer), stdin);
+                    sscanf(buffer, "%c", &choice);
+                    write(1, "\n", 1);
                     if (choice == 'Y' || choice == 'y') {
                         write(1, "Which supemon do you want to replace? (1-5): ", 45);
                         int replaceChoice;
-                        scanf("%d", &replaceChoice);
+                        fgets(buffer, sizeof(buffer), stdin);
+                        sscanf(buffer, "%d", &replaceChoice);
+                        write(1, "\n", 1);
                         if (1 <= replaceChoice && replaceChoice <= 5) {
                             ptrPlayer->supemons[replaceChoice] = enemy;
                         } else {
@@ -192,7 +205,7 @@ void fight(Player *ptrPlayer) {
                         write(1, "You chose not to replace\n", 26);
                     }
                 }
-                ask_where_to_go();
+                ask_where_to_go(ptrPlayer);
             } else {
                 write(1, "You failed to capture the enemy\n", 32);
             }
@@ -200,7 +213,7 @@ void fight(Player *ptrPlayer) {
             int random = rand() % (ptrPlayer->supemons[0]->evasion + enemy->evasion);
             if (random < ptrPlayer->supemons[0]->evasion) {
                 write(1, "You ran away\n", 14);
-                ask_where_to_go();
+                ask_where_to_go(ptrPlayer);
             } else {
                 write(1, "You failed to run away\n", 23);
             }
@@ -279,7 +292,7 @@ void displaySupemonStats(Player *ptrPlayer, Supemon *enemy) {
 
     if (ptrPlayer->supemons[0]->hp <= 0) {
         write(1, "\nYour Supemon fainted\n", 22);
-        ask_where_to_go();
+        ask_where_to_go(ptrPlayer);
     }
     else if (enemy->hp <= 0) {
         write(1, "\nYou defeated the enemy\n", 24);
@@ -287,10 +300,25 @@ void displaySupemonStats(Player *ptrPlayer, Supemon *enemy) {
         ptrPlayer->money += moneyEarned;
         int xpEarned = rand() % ptrPlayer->supemons[0]->level * 401 + 100;
         ptrPlayer->supemons[0]->experience += xpEarned;
-        printf("Your Supemon earned %d XP!\n", xpEarned);
-        printf("Your Supemon now has %d / %d XP !\n", ptrPlayer->supemons[0]->experience, ptrPlayer->supemons[0]->experience_max);
-        printf("You earned %d Supecoins!\n", moneyEarned);
-        printf("You now have %d Supecoins!\n", ptrPlayer->money);
-        ask_where_to_go();
+        write(1, "Your Supemon earned ", 20);
+        sprintf(hp, "%d", xpEarned);
+        write(1, hp, strlen(hp));
+        write(1, " XP!\n", 5);
+        write(1, "Your Supemon now has ", 21);
+        sprintf(hp, "%d", ptrPlayer->supemons[0]->experience);
+        write(1, hp, strlen(hp));
+        write(1, " / ", 3);
+        sprintf(max_hp, "%d", ptrPlayer->supemons[0]->experience_max);
+        write(1, max_hp, strlen(max_hp));
+        write(1, " XP!\n", 5);
+        write(1, "You earned ", 11);
+        sprintf(hp, "%d", moneyEarned);
+        write(1, hp, strlen(hp));
+        write(1, " Supecoins!\n", 12);
+        write(1, "You now have ", 13);
+        sprintf(hp, "%d", ptrPlayer->money);
+        write(1, hp, strlen(hp));
+        write(1, " Supecoins!\n", 12);
+        ask_where_to_go(ptrPlayer);
     }
 }

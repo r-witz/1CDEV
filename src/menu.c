@@ -91,6 +91,7 @@ void execute_choice(const char *choice2, Player *ptrPlayer) {
         write(1, "GOODBYE\n", 8);
         exit(0);
     } else {
+        empty_buffer();
         write(1, "INCORRECT\n", 10);
         ask_where_to_go(ptrPlayer);
     }
