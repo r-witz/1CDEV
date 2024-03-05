@@ -11,8 +11,8 @@ typedef struct {
 typedef struct {
     char *name;
     short level;
-    short experience;
-    short experience_max;
+    int experience;
+    int experience_max;
     short hp;
     short max_hp;
     short attack;

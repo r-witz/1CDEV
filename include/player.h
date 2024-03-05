@@ -15,3 +15,4 @@ typedef struct {
 void freeSupemon(Supemon *ptrSupemon);
 Player *createPlayer();
 Player *loadPlayer(const char *filename);
+void savePlayer(const char *filename, Player *player);

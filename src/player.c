@@ -24,7 +24,6 @@ void freePlayer(Player *player) {
 Player *createPlayer() {
     Player *player = malloc(sizeof(Player));
     if (!player) {
-        perror("Memory allocation failed");
         return NULL;
     }
 
@@ -73,6 +72,7 @@ void savePlayer(const char *filename, Player *player) {
             cJSON_AddStringToObject(supemonObj, "name", supemon->name);
             cJSON_AddNumberToObject(supemonObj, "level", supemon->level);
             cJSON_AddNumberToObject(supemonObj, "experience", supemon->experience);
+	    cJSON_AddNumberToObject(supemonObj, "experience_max", supemon->experience_max);
             cJSON_AddNumberToObject(supemonObj, "hp", supemon->hp);
             cJSON_AddNumberToObject(supemonObj, "max_hp", supemon->max_hp);
             cJSON_AddNumberToObject(supemonObj, "attack", supemon->attack);
@@ -117,7 +117,6 @@ Player *loadPlayer(const char *filename) {
     
     FILE *file = fopen(filename, "r");
     if (!file) {
-        fprintf(stderr, "Error opening file for reading\n");
         return NULL;
     }
 
@@ -178,6 +177,7 @@ Player *loadPlayer(const char *filename) {
         supemon->name = strdup(cJSON_GetObjectItemCaseSensitive(supemonObj, "name")->valuestring);
         supemon->level = cJSON_GetObjectItemCaseSensitive(supemonObj, "level")->valueint;
         supemon->experience = cJSON_GetObjectItemCaseSensitive(supemonObj, "experience")->valueint;
+	supemon->experience_max = cJSON_GetObjectItemCaseSensitive(supemonObj, "experience_max")->valueint;
         supemon->hp = cJSON_GetObjectItemCaseSensitive(supemonObj, "hp")->valueint;
         supemon->max_hp = supemon->hp;
         supemon->attack = cJSON_GetObjectItemCaseSensitive(supemonObj, "attack")->valueint;

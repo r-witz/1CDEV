@@ -59,27 +59,21 @@ Supemon *getSupemonByID(int id) {
         return NULL;
       }
 
-      supemon->name = strdup(
-          cJSON_GetObjectItemCaseSensitive(supemonObj, "name")->valuestring);
+      supemon->name = strdup(cJSON_GetObjectItemCaseSensitive(supemonObj, "name")->valuestring);
       supemon->level = 1;
       supemon->experience = 0;
-      supemon->hp =
-          cJSON_GetObjectItemCaseSensitive(supemonObj, "hp")->valueint;
+      supemon->experience_max = 500;
+      supemon->hp = cJSON_GetObjectItemCaseSensitive(supemonObj, "hp")->valueint;
       supemon->max_hp = supemon->hp;
-      supemon->attack =
-          cJSON_GetObjectItemCaseSensitive(supemonObj, "attack")->valueint;
+      supemon->attack = cJSON_GetObjectItemCaseSensitive(supemonObj, "attack")->valueint;
       supemon->base_attack = supemon->attack;
-      supemon->defense =
-          cJSON_GetObjectItemCaseSensitive(supemonObj, "defense")->valueint;
+      supemon->defense = cJSON_GetObjectItemCaseSensitive(supemonObj, "defense")->valueint;
       supemon->base_defense = supemon->defense;
-      supemon->evasion =
-          cJSON_GetObjectItemCaseSensitive(supemonObj, "evasion")->valueint;
+      supemon->evasion = cJSON_GetObjectItemCaseSensitive(supemonObj, "evasion")->valueint;
       supemon->base_evasion = supemon->evasion;
-      supemon->accuracy =
-          cJSON_GetObjectItemCaseSensitive(supemonObj, "accuracy")->valueint;
+      supemon->accuracy = cJSON_GetObjectItemCaseSensitive(supemonObj, "accuracy")->valueint;
       supemon->base_accuracy = supemon->accuracy;
-      supemon->speed =
-          cJSON_GetObjectItemCaseSensitive(supemonObj, "speed")->valueint;
+      supemon->speed = cJSON_GetObjectItemCaseSensitive(supemonObj, "speed")->valueint;
 
       cJSON *movesArray = cJSON_GetObjectItemCaseSensitive(supemonObj, "moves");
       cJSON *movesObj = NULL;
@@ -146,14 +140,10 @@ Supemon *getSupemonByID(int id) {
         for (int i = 0; i < 2; i++) {
           if (moves[i] == moveId) {
             cJSON *nameObj = cJSON_GetObjectItemCaseSensitive(moveObj, "name");
-            cJSON *damageObj =
-                cJSON_GetObjectItemCaseSensitive(moveObj, "damage");
-            cJSON *attackBonusObj =
-                cJSON_GetObjectItemCaseSensitive(moveObj, "attack_bonus");
-            cJSON *defenseBonusObj =
-                cJSON_GetObjectItemCaseSensitive(moveObj, "defense_bonus");
-            cJSON *evasionBonusObj =
-                cJSON_GetObjectItemCaseSensitive(moveObj, "evasion_bonus");
+            cJSON *damageObj = cJSON_GetObjectItemCaseSensitive(moveObj, "damage");
+            cJSON *attackBonusObj = cJSON_GetObjectItemCaseSensitive(moveObj, "attack_bonus");
+            cJSON *defenseBonusObj = cJSON_GetObjectItemCaseSensitive(moveObj, "defense_bonus");
+            cJSON *evasionBonusObj = cJSON_GetObjectItemCaseSensitive(moveObj, "evasion_bonus");
 
             Move *move = malloc(sizeof(Move));
             if (!move) {
@@ -168,12 +158,9 @@ Supemon *getSupemonByID(int id) {
 
             move->name = strdup(nameObj->valuestring);
             move->damage = cJSON_IsNumber(damageObj) ? damageObj->valueint : 0;
-            move->attack_bonus =
-                cJSON_IsNumber(attackBonusObj) ? attackBonusObj->valueint : 0;
-            move->defense_bonus =
-                cJSON_IsNumber(defenseBonusObj) ? defenseBonusObj->valueint : 0;
-            move->evasion_bonus =
-                cJSON_IsNumber(evasionBonusObj) ? evasionBonusObj->valueint : 0;
+            move->attack_bonus = cJSON_IsNumber(attackBonusObj) ? attackBonusObj->valueint : 0;
+            move->defense_bonus = cJSON_IsNumber(defenseBonusObj) ? defenseBonusObj->valueint : 0;
+            move->evasion_bonus = cJSON_IsNumber(evasionBonusObj) ? evasionBonusObj->valueint : 0;
 
             supemon->moves[i] = move;
           }

@@ -55,9 +55,17 @@ Player* execute_game_load(const char *choice) {
         ask_supemon(ptrPlayer);
         return ptrPlayer;
     } else if (strcmp(choice, "2") == 0) {
-        return loadPlayer("backup/player.json");
-    } else {
-        return NULL;
+	Player *player = loadPlayer("backup/player.json");
+
+	if (player == NULL) {
+	    write(1, "You have no save, loading a new game...\n", 40);
+	    Player *ptrPlayer = createPlayer();
+	    ask_name(ptrPlayer);
+	    ask_supemon(ptrPlayer);
+	    return ptrPlayer;
+	} else {
+        return player;
+    	}
     }
     empty_buffer();
 }
@@ -66,14 +74,14 @@ void ask_where_to_go(Player *ptrPlayer) {
     char choice2[2];
     char buffer[100];
 
-    write(1, "+----------------------------+\n", 32);
-    write(1, "|Where do you want to go?    |\n", 32);
-    write(1, "|    1. Into the Wild        |\n", 32);
-    write(1, "|    2. In the Shop          |\n", 32);
-    write(1, "|    3. In the Supemon Center|\n", 32);
-    write(1, "|    4. Leave the game       |\n", 32);
-    write(1, "+----------------------------+\n", 32);
-    write(1, "1, 2, 3, or 4 : ", 15);
+    write(1, "+-----------------------------+\n", 33);
+    write(1, "|  Where do you want to go ?  |\n", 33);
+    write(1, "|    1. Into the Wild         |\n", 33);
+    write(1, "|    2. In the Shop           |\n", 33);
+    write(1, "|    3. In the Supemon Center |\n", 33);
+    write(1, "|    4. Leave the game        |\n", 33);
+    write(1, "+-----------------------------+\n", 33);
+    write(1, "1, 2, 3, or 4 : ", 16);
     fgets(buffer, sizeof(buffer), stdin);
     buffer[strcspn(buffer, "\n")] = '\0';
     strncpy(choice2, buffer, sizeof(choice2)); 
@@ -88,7 +96,9 @@ void execute_choice(const char *choice2, Player *ptrPlayer) {
     } else if (strcmp(choice2, "3") == 0) {
         pokecenter(ptrPlayer);
     } else if (strcmp(choice2, "4") == 0) {
-        write(1, "GOODBYE\n", 8);
+        savePlayer("backup/player.json", ptrPlayer);
+	write(1, "Game sucessfully saved !\n", 25);
+	write(1, "Thank you for playing hope we see you soon again\n", 49);
         exit(0);
     } else {
         empty_buffer();
