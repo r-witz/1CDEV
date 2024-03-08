@@ -26,7 +26,6 @@ void welcome() {
 
 Player* ask_new_game() {
     char choice[2];
-    char buffer[100];
     write(1, "+----------------------------+\n", 32);
     write(1, "|  What do you want to do ?  |\n", 32);
     write(1, "|        1. New Game         |\n", 32);
@@ -35,10 +34,9 @@ Player* ask_new_game() {
 
     do {
         write(1, "1 or 2 : ", 9);
-        fgets(buffer, sizeof(buffer), stdin);
-        buffer[strcspn(buffer, "\n")] = '\0';
-        strncpy(choice, buffer, sizeof(choice));
-
+        fgets(choice, sizeof(choice), stdin);
+        choice[strcspn(choice, "\n")] = '\0';
+        empty_buffer();
         if (strcmp(choice, "1") != 0 && strcmp(choice, "2") != 0) {
             write(1, "Please enter a valid number.\n", 29);
             continue;
@@ -68,6 +66,7 @@ Player* execute_game_load(const char *choice) {
     	}
     }
     empty_buffer();
+    return 0;
 }
 
 void ask_where_to_go(Player *ptrPlayer) {
