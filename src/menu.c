@@ -25,49 +25,40 @@ void welcome() {
 }
 
 Player* ask_new_game() {
-    char choice[2];
+    int choice;
     char buffer[100];
+    
     write(1, "+----------------------------+\n", 32);
     write(1, "|  What do you want to do ?  |\n", 32);
-    write(1, "|        1. New Game         |\n", 32);
-    write(1, "|        2. Load Game        |\n", 32);
+    write(1, "|    1. New Game             |\n", 32);
+    write(1, "|    2. Load Game            |\n", 32);
     write(1, "+----------------------------+\n", 32);
+    
+    Player *ptrPlayer = NULL;
 
     do {
-        write(1, "1 or 2 : ", 9);
-        fgets(buffer, sizeof(buffer), stdin);
-        buffer[strcspn(buffer, "\n")] = '\0';
-        strncpy(choice, buffer, sizeof(choice));
+      write(1, "1 or 2 : ", 9);
+      fgets(buffer, sizeof(buffer), stdin);
+      sscanf(buffer, "%d", &choice);
 
-        if (strcmp(choice, "1") != 0 && strcmp(choice, "2") != 0) {
-            write(1, "Please enter a valid number.\n", 29);
-            continue;
-        }
-    } while(strcmp(choice, "1") != 0 && strcmp(choice, "2") != 0);
-    
-    return execute_game_load(choice);
-}
-
-Player* execute_game_load(const char *choice) {
-    if (strcmp(choice, "1") == 0) {
-        Player *ptrPlayer = createPlayer();
+      if (choice == 1) {
+        ptrPlayer = createPlayer();
         ask_name(ptrPlayer);
         ask_supemon(ptrPlayer);
-        return ptrPlayer;
-    } else if (strcmp(choice, "2") == 0) {
-	Player *player = loadPlayer("backup/player.json");
-
-	if (player == NULL) {
-	    write(1, "You have no save, loading a new game...\n", 40);
-	    Player *ptrPlayer = createPlayer();
-	    ask_name(ptrPlayer);
-	    ask_supemon(ptrPlayer);
-	    return ptrPlayer;
-	} else {
-        return player;
-    	}
-    }
-    empty_buffer();
+      } else if (choice == 2) {
+        ptrPlayer = loadPlayer("backup/player.json");
+        if (ptrPlayer == NULL) {
+          write(1, "You have no save, loading a new game...\n", 40);
+          ptrPlayer = createPlayer();
+          ask_name(ptrPlayer);
+          ask_supemon(ptrPlayer);
+        }
+      } else {
+        write(1, "Please enter a valid number.\n", 29);
+      }
+    } while(choice != 1 && choice != 2);
+    
+    return ptrPlayer;
 }
 
 void ask_where_to_go(Player *ptrPlayer) {

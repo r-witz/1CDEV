@@ -5,20 +5,22 @@
 #include "../include/player.h"
 
 void ask_where_to_go(Player *ptrPlayer);
+
 void pokecenter(Player *ptrPlayer) {
     int choice;
     char buffer[100];
+
+    write(1, "+----------------------------+\n" , 32);
+    write(1, "|   What do you want to do?  |\n", 32);
+    write(1, "|    1. Heal Supemons        |\n", 32);
+    write(1, "|    2. Leave the pokecenter |\n", 32);
+    write(1, "+----------------------------+\n" , 32);
+
     do {
-        write(1, "+----------------------------+\n" , 32);
-        write(1, "|   What do you want to do?  |\n", 32);
-        write(1, "|    1. Heal Supemons        |\n", 32);
-        write(1, "|    2. Leave the pokecenter |\n", 32);
-        write(1, "+----------------------------+\n" , 32);
-        write(1, "1 or 2 : ", 10);
-        
+        write(1, "1 or 2 : ", 9); 
         fgets(buffer, sizeof(buffer), stdin);
         sscanf(buffer, "%d", &choice);
-        write(1, "\n", 1);
+
         if (choice == 1) {
             for (int i=0; i<6; i++) {
                 if (ptrPlayer->supemons[i] != 0) {
@@ -40,11 +42,9 @@ void pokecenter(Player *ptrPlayer) {
                 }
             }
             ask_where_to_go(ptrPlayer);
-        }
-        else if (choice == 2) {
+        } else if (choice == 2) {
             ask_where_to_go(ptrPlayer);
-        }
-        else {
+        } else {
             write(1, "Please enter a valid number.\n", 29);
         }
     } while (choice != 1 && choice != 2);
