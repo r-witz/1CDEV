@@ -27,7 +27,7 @@ void welcome() {
 Player* ask_new_game() {
     int choice;
     char buffer[100];
-    
+
     write(1, "+----------------------------+\n", 32);
     write(1, "|  What do you want to do ?  |\n", 32);
     write(1, "|    1. New Game             |\n", 32);

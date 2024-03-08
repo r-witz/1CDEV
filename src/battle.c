@@ -43,8 +43,10 @@ void fight(Player *ptrPlayer) {
             write(1, "2 - Grawl\n", 11);
             write(1, "3 - Cancel\n", 12);  
             write(1, "1, 2 or 3 : ", 13);
-
-            scanf("%d", &choiceAttack);
+            
+            fgets(buffer, sizeof(buffer), stdin);
+            sscanf(buffer, "%d", &choiceAttack);
+            write(1, "\n", 1);
 
             if (choiceAttack == 1) {
                 double dodge = ptrPlayer->supemons[0]->accuracy + enemy->evasion + 0.1;
@@ -70,39 +72,61 @@ void fight(Player *ptrPlayer) {
             }
         } else if (choice4 == 2) {
             write(1, "Which supemon do you want to summon ?\n", 38);
+            char supemonHpStr[12];
+            char supemonMaxHpStr[12];
+            char supemonLevelStr[2];
+            char numerotationStr[2];
+            write(1, "Your supemons:\n", 15);
             for (int i = 0; i < 6; i++) {
                 if (ptrPlayer->supemons[i] != NULL) {
-                    write(1, "Supemon \n", 9);
                     char* supemonName = ptrPlayer->supemons[i]->name;
+                    int supemonHp = ptrPlayer->supemons[i]->hp;
+                    int supemonMaxHp = ptrPlayer->supemons[i]->max_hp;
+                    int supemonLevel = ptrPlayer->supemons[i]->level;
+                    int numerotation = i + 1;
+                    write(1, "(", 2);
+                    sprintf(numerotationStr, "%d", numerotation);
+                    write(1, numerotationStr, strlen(numerotationStr));
+                    write(1, ") ", 2);
                     write(1, supemonName, strlen(supemonName));
                     write(1, " (", 2);
-                    int supemonHp = ptrPlayer->supemons[i]->hp;
-                    printf("%d", supemonHp);
+                    sprintf(supemonHpStr, "%d", supemonHp);
+                    write(1, supemonHpStr, strlen(supemonHpStr));
                     write(1, "/", 1);
-                    int supemonMaxHp = ptrPlayer->supemons[i]->max_hp;
-                    printf("%d", supemonMaxHp);
-                    write(1, ")\n", 2);
+                    sprintf(supemonMaxHpStr, "%d", supemonMaxHp);
+                    write(1, supemonMaxHpStr, strlen(supemonMaxHpStr));
+                    write(1, ") ", 2);
+                    write(1, "Lvl: ", 5);
+                    sprintf(supemonLevelStr, "%d", supemonLevel);
+                    write(1, supemonLevelStr, strlen(supemonLevelStr));
+                    write(1, "\n", 1);
                 }
             }
-            char choice4[100];
+            char choiceSupemon[3];
             fgets(buffer, sizeof(buffer), stdin);
             buffer[strcspn(buffer, "\n")] = '\0';
-            strncpy(choice4, buffer, sizeof(choice4) - 1);
+            strncpy(choiceSupemon, buffer, sizeof(choiceSupemon) - 1);
 
-            if (1 <= choiceAttack && choiceAttack <= 6) {
-                if (ptrPlayer->supemons[choiceAttack - 1] != NULL) {
-                    ptrPlayer->supemons[0] = ptrPlayer->supemons[choiceAttack - 1];
+            int choiceSupemonInt = atoi(choiceSupemon);
+
+            if (1 <= choiceSupemonInt && choiceSupemonInt <= 6) {
+                int choiceSupemonIndex = choiceSupemonInt - 1;
+
+                if (ptrPlayer->supemons[choiceSupemonIndex] != NULL) {
+                    Supemon* temp;
+                    temp = ptrPlayer->supemons[0];
+                    ptrPlayer->supemons[0] = ptrPlayer->supemons[choiceSupemonIndex];
+                    ptrPlayer->supemons[choiceSupemonIndex] = temp;
                     char* supemonName = ptrPlayer->supemons[0]->name;
                     write(1, supemonName, strlen(supemonName));
                     write(1, " is summoned\n", 13);
-                }
-                else if (ptrPlayer->supemons[choiceAttack - 1] == NULL) {
+                } else {
                     write(1, "No supemon here\n", 16);
                 }
-                else {
-                    write(1, "invalid choice\n", 15);
+            } else {
+                write(1, "Invalid choice\n", 15);
             }
-        }
+
         } else if (choice4 == 3) {
             int maximumItems;
             while (maximumItems != 4) {
@@ -288,7 +312,14 @@ void displaySupemonStats(Player *ptrPlayer, Supemon *enemy) {
     sprintf(eva, "%d", ptrPlayer->supemons[0]->evasion);
     write(1, eva, strlen(eva));
     write(1, "\n-----------------------\n\n", 26);
-
+    // printf("%s\n", ptrPlayer->supemons[0]->moves[0]->name);
+    // printf("%s\n", ptrPlayer->supemons[0]->moves[1]->name);
+    // printf("%s\n", enemy->moves[0]->name);
+    // printf("%s\n", enemy->moves[1]->name);
+    // printf("%d\n", ptrPlayer->supemons[0]->moves[0]->damage);
+    // printf("%d\n", ptrPlayer->supemons[0]->moves[1]->damage);
+    // printf("%d\n", enemy->moves[0]->damage);
+    // printf("%d\n", enemy->moves[1]->damage);
 
     if (ptrPlayer->supemons[0]->hp <= 0) {
         write(1, "\nYour Supemon fainted\n", 22);
