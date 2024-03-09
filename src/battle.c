@@ -6,37 +6,414 @@
 
 #include "../include/player.h"
 
-void ask_where_to_go(Player *ptrPlayer);
 Supemon *getSupemonByID(int id);
-void empty_buffer();
 
-void displaySupemonStats(Player *ptrPlayer, Supemon *enemy);
+void get_input(char *prompt, void *output, char type, const int BUFFER_SIZE);
+void fight_menu();
+void main_menu();
 
-void fight(Player *ptrPlayer) {
-    int choiceAttack, choice4; 
-    Supemon *enemy = NULL;
-    char buffer[100];
+void stats_display(Player *ptrPlayer, Supemon *ptrEnemy);
+int move(Player *ptrPlayer, Supemon *ptrEnemy);
+int enemy_move(Supemon *ptrSupemon, Supemon *ptrEnemy);
+int use_move(Supemon *ptrSupemon, Supemon *ptrEnemy, short moveID);
+int change_supemon(Player *ptrPlayer);
+int capture(Player *ptrPlayer, Supemon *ptrEnemy);
+int run_away(Supemon *ptrSupemon, Supemon *ptrEnemy);
+int round_number(float num);
+void level_up(Supemon *ptrSupemon);
+void win(Player *ptrPlayer, Supemon *ptrEnemy);
+
+void fight(Player *ptrPlayer) { 
+    srand(time(NULL));
+
+    Supemon *ptrEnemy = getSupemonByID(rand()%3+1);
+    while (ptrEnemy->level < ptrPlayer->supemons[0]->level) {
+        level_up(ptrEnemy);
+    }
+
+    char bufferStr[3];
+    write(1, "You've stumbled against a lvl.", 30);
+    sprintf(bufferStr, "%d", ptrEnemy->level);
+    write(1, bufferStr, strlen(bufferStr));
+    write(1, " ", 1);
+    write(1, ptrEnemy->name, strlen(ptrEnemy->name));
+    write(1, " !\n", 3);
+
+    short playing;
+    short choice;
+
+    do { 
+        stats_display(ptrPlayer, ptrEnemy);
+        fight_menu();
+        get_input("1, 2, 3, 4 or 5: ", &choice, 'i', 3);
+        
+        switch (choice) {
+            case 1:
+                if (ptrPlayer->supemons[0]->speed >= ptrEnemy->speed) {
+                    playing = move(ptrPlayer, ptrEnemy);
+                    if (playing == 0) {break;}
+                    playing = enemy_move(ptrPlayer->supemons[0], ptrEnemy);
+                } else {
+                    playing = enemy_move(ptrPlayer->supemons[0], ptrEnemy);
+                    if (playing == 0) {break;}
+                    playing = move(ptrPlayer, ptrEnemy);
+                }
+                break;
+            case 2:
+                playing = change_supemon(ptrPlayer);
+                playing = enemy_move(ptrPlayer->supemons[0], ptrEnemy);
+                break;
+            case 3:
+                //playing = use_item(ptrPlayer);
+                break;
+            case 4:
+                playing = capture(ptrPlayer, ptrEnemy);
+                if (playing == 0) {break;}
+                playing = enemy_move(ptrPlayer->supemons[0], ptrEnemy);
+                break;
+            case 5:
+                playing = run_away(ptrPlayer->supemons[0], ptrEnemy);
+                if (playing == 0) {break;}
+                playing = enemy_move(ptrPlayer->supemons[0], ptrEnemy);
+                break;
+            default:
+                write(1, "Please enter a number between 1-5\n", 34);
+        }
+    } while(playing);
+
+    main_menu();
+}
+
+void stats_display(Player *ptrPlayer, Supemon *ptrEnemy) {
+  char bufferStr[33];
+
+  write(1, "--------------------------------\n", 33);
+  write(1, ptrEnemy->name, strlen(ptrEnemy->name));
+  write(1, " (enemy)\n", 9);
+  sprintf(bufferStr, "HP: %d/%d \tLvl: %d\n", ptrEnemy->hp, ptrEnemy->max_hp, ptrEnemy->level);
+  write(1, bufferStr, strlen(bufferStr));
+  sprintf(bufferStr, "Atk: %d  \tDef: %d\n", ptrEnemy->attack, ptrEnemy->defense);
+  write(1, bufferStr, strlen(bufferStr));
+  sprintf(bufferStr, "Acc: %d  \tEva: %d\n", ptrEnemy->accuracy, ptrEnemy->evasion);
+  write(1, bufferStr, strlen(bufferStr));
+  write(1, "--------------------------------\n", 33);
+  
+  Supemon *ptrSupemon = ptrPlayer->supemons[0];
+ 
+  write(1, ptrSupemon->name, strlen(ptrSupemon->name));
+  write(1, " (", 2);
+  write(1, ptrPlayer->name, strlen(ptrPlayer->name));
+  write(1, ")\n", 2);
+  sprintf(bufferStr, "HP: %d/%d \tLvl: %d\n", ptrSupemon->hp, ptrSupemon->max_hp, ptrSupemon->level);
+  write(1, bufferStr, strlen(bufferStr));
+  sprintf(bufferStr, "Atk: %d\t\tDef: %d\n", ptrSupemon->attack, ptrSupemon->defense);
+  write(1, bufferStr, strlen(bufferStr));
+  sprintf(bufferStr, "Acc: %d\t\tEva: %d\n", ptrSupemon->accuracy, ptrSupemon->evasion);
+  write(1, bufferStr, strlen(bufferStr));
+  write(1, "--------------------------------\n\n", 34);
+
+}
+
+int move(Player *ptrPlayer, Supemon *ptrEnemy) {
+    Supemon *ptrSupemon = ptrPlayer->supemons[0];
+    for (short i=0; i<2; i++) {
+        char bufferStr[10];
+        sprintf(bufferStr, "%d", i);
+        write(1, bufferStr, strlen(bufferStr));
+        write(1, ". ", 2);
+        write(1, ptrSupemon->moves[i]->name, strlen(ptrSupemon->moves[i]->name));
+        write(1, "\n", 1);
+    }
+    write(1, "3. Cancel\n", 10);
+
+    short choice;
 
     do {
+        get_input("1, 2 or 3: ", &choice, 'i', 3);
+
+        switch (choice) {
+            case 1:
+            case 2:
+                write(1, "You use ", 8);
+                write(1, ptrSupemon->moves[choice-1]->name, strlen(ptrSupemon->moves[choice-1]->name));
+                write(1, " !\n", 3);
+                if (use_move(ptrSupemon, ptrEnemy, choice-1) == 0) {
+                    write(1, "You've won the battle !\n", 24);
+                    win(ptrPlayer, ptrEnemy);
+                    return 0;
+                }
+                break;
+            case 3:
+                break;
+            default:
+                write(1, "Please enter a number between 1-3\n", 34);
+        }
+
+    } while (choice != 1 && choice != 2 && choice != 3);
+
+    return 1;
+}
+
+int enemy_move(Supemon *ptrSupemon, Supemon *ptrEnemy) {
+    short move_selected = rand() % 2;
+    write(1, ptrEnemy->name, strlen(ptrEnemy->name));
+    write(1, " uses ", 6);
+    write(1, ptrEnemy->moves[move_selected]->name, strlen(ptrEnemy->moves[move_selected]->name));
+    write(1, " !\n", 3);
+    return use_move(ptrEnemy, ptrSupemon, move_selected);
+}
+
+int use_move(Supemon *ptrSupemon, Supemon *ptrEnemy, short moveID) {
+    if (ptrSupemon->moves[moveID]->damage != 0) {
+        float success_rate = ((float)ptrSupemon->accuracy / (ptrSupemon->accuracy + ptrEnemy->evasion) + 0.1)*100;
+        short random_number = rand() % 100;
+
+        if (random_number < success_rate) {
+            float damage = ptrSupemon->attack * ptrSupemon->moves[moveID]->damage / (float)(ptrEnemy->defense);
+            ptrEnemy->hp -= damage == (int)damage ? damage : (rand()%100 < 50) ? (int)damage : (int)(damage+1);
+            write(1, "The attack hit ", 15);
+            write(1, ptrEnemy->name, strlen(ptrEnemy->name));
+            write(1, " successfully !\n", 16);
+            
+        } else {
+            write(1, ptrEnemy->name, strlen(ptrEnemy->name));
+            write(1, " has dodged the attack !\n", 25);
+        }
+        
+    }
+    ptrSupemon->attack += ptrSupemon->moves[moveID]->attack_bonus;
+    ptrSupemon->defense += ptrSupemon->moves[moveID]->defense_bonus;
+    ptrSupemon->evasion += ptrSupemon->moves[moveID]->evasion_bonus;
+
+    if (ptrEnemy->hp <= 0) {
+        ptrEnemy->hp = 0;
+        write(1, ptrEnemy->name, strlen(ptrEnemy->name));
+        write(1, " is K.O.\n", 9);
+        return 0;
+    }
+
+    return 1;
+}
+
+int change_supemon(Player *ptrPlayer) {
+    write(1, "+------------Your Team-----------+\n", 35);
+    for (short i=0; i<6; i++) {
+        char bufferStr[6];
+        sprintf(bufferStr, "%d", i+1);
+        write(1, bufferStr, strlen(bufferStr));
+        write(1, ". ", 2);
+        if (ptrPlayer->supemons[i] != 0) {
+            write(1, ptrPlayer->supemons[i]->name, strlen(ptrPlayer->supemons[i]->name));
+            write(1, " lvl.", 5);
+            sprintf(bufferStr, "%d", ptrPlayer->supemons[i]->level);
+            write(1, bufferStr, strlen(bufferStr));
+            write(1, "\t(", 2);
+            sprintf(bufferStr, "%d", ptrPlayer->supemons[i]->hp);
+            write(1, bufferStr, strlen(bufferStr));
+            write(1, "/", 1);
+            sprintf(bufferStr, "%d", ptrPlayer->supemons[i]->max_hp);
+            write(1, bufferStr, strlen(bufferStr));
+            write(1, "HP)\n", 4);
+        } else {
+            write(1, "EMPTY\n", 6);
+        }
+    }
+    write(1, "7. Cancel\n", 11);
+
+    short choice;
+    short valid_supemon = 0;
+    
+    do {
+        get_input("1, 2, 3, 4, 5, 6 or 7: ", &choice, 'i', 3);
+        
+        switch (choice) {
+            case 1:
+                write(1, ptrPlayer->supemons[0]->name, strlen(ptrPlayer->supemons[0]->name));
+                write(1, " is already fighting !\n", 23);
+                valid_supemon = 0;
+                break;
+            case 2:
+            case 3:
+            case 4:
+            case 5:
+            case 6:
+                if (ptrPlayer->supemons[choice-1] == 0) {
+                    write(1, "Slot is empty.\n", 15);
+                    valid_supemon = 0;
+                } else {
+                    Supemon *temp = ptrPlayer->supemons[0];
+                    ptrPlayer->supemons[0] = ptrPlayer->supemons[choice-1];
+                    ptrPlayer->supemons[choice-1] = temp;
+                    valid_supemon = 1;
+
+                    write(1, "You bring ", 10);
+                    write(1, ptrPlayer->supemons[0]->name, strlen(ptrPlayer->supemons[0]->name));
+                    write(1, " to the fight !\n", 16);
+                }
+                break;
+            case 7:
+                write(1, "Your change has been canceled, you are back to the fight !\n", 59);
+                valid_supemon = 1;
+                break;
+            default:
+                write(1, "Please enter a number between 1-7\n", 34);
+        }
+
+    } while (valid_supemon == 0 && choice != 2 && choice != 3 && choice != 4 && choice != 5 && choice != 6 && choice != 7);
+    return 1; 
+}
+
+int capture(Player *ptrPlayer, Supemon *ptrEnemy) {
+    float success_rate = ((float)(ptrEnemy->max_hp - ptrEnemy->hp) / ptrEnemy->max_hp - 0.5)*100;
+    short random_number = rand() % 100;
+
+    if (random_number < success_rate) {
+        write(1, "You successfully captured ", 26);
+        write(1, ptrEnemy->name, sizeof(ptrEnemy->name)+1);
+        write(1, " !\n", 3);
+        
+        short available_position = -1;
+        for (short i=0; i<6; i++) {
+
+            if (ptrPlayer->supemons[i] == 0) {
+                available_position = i;
+                ptrPlayer->supemons[i] = ptrEnemy;
+                ptrPlayer->supemons[i]->hp = ptrPlayer->supemons[i]->max_hp;
+                break;
+            }
+        }
+
+        if (available_position == -1) {
+            write(1, "You have no more available places in your team\n", 47);
+            write(1, "What Supemon do you want to replace ?\n", 38);
+
+            for (short i=0; i<6; i++) {
+                char bufferStr[6];
+                sprintf(bufferStr, "%d", i+1);
+                write(1, bufferStr, strlen(bufferStr));
+                write(1, ". ", 2);
+                write(1, ptrPlayer->supemons[i]->name, strlen(ptrPlayer->supemons[i]->name));
+                write(1, " lvl.", 5);
+                sprintf(bufferStr, "%d", ptrPlayer->supemons[i]->level);
+                write(1, bufferStr, strlen(bufferStr));
+                write(1, "\t(", 2);
+                sprintf(bufferStr, "%d", ptrPlayer->supemons[i]->hp);
+                write(1, bufferStr, strlen(bufferStr));
+                write(1, "/", 1);
+                sprintf(bufferStr, "%d", ptrPlayer->supemons[i]->max_hp);
+                write(1, bufferStr, strlen(bufferStr));
+                write(1, "HP)\n", 4);
+            }
+            
+            write(1, "7. Don't replace any Supemon\n", 29);
+
+            short choice;
+            
+            do {
+                get_input("1, 2, 3, 4, 5, 6 or 7: ", &choice, 'i', 3);
+
+                switch (choice) {
+                    case 1:
+                    case 2:
+                    case 3:
+                    case 4:
+                    case 5:
+                    case 6:
+                        ptrPlayer->supemons[choice-1] = ptrEnemy;
+                        ptrPlayer->supemons[choice-1]->hp = ptrPlayer->supemons[choice-1]->max_hp;
+                        break;
+                    case 7:
+                        write(1, "You've released ", 16);
+                        write(1, ptrEnemy->name, sizeof(ptrEnemy->name));
+                        write(1, " into the wild !\n", 17);
+                        break;
+                    default:
+                        write(1, "Please enter a number between 1-7\n", 34);
+                }
+
+            } while(choice != 1 && choice != 2 && choice != 3 && choice != 4 && choice != 5 && choice != 6 && choice != 7);
+        } 
+        win(ptrPlayer, ptrEnemy);
+        return 0;
+    } else {
+        write(1, "You failed to capture ", 22);
+        write(1, ptrEnemy->name, sizeof(ptrEnemy->name)+1);
+        write(1, " !\n", 3);
+        return 1;
+    }
+}
+
+int run_away(Supemon *ptrSupemon, Supemon *ptrEnemy) {
+    float success_rate = ((float)ptrSupemon->speed / (ptrSupemon->speed + ptrEnemy->speed))*100;
+    short random_number = rand() % 100;
+
+    if (random_number < success_rate) {
+        write(1, "You successfully run away !\n", 28);
+        freeSupemon(ptrEnemy);
+        return 0;
+    } else {
+        write(1, "You failed to run away !\n", 25);
+        return 1;
+    }
+}
+
+int round_number(float num) {
+    return num == (int) num ? num : (rand() % 100 < 50) ? (int)(num + 1) : (int)(num);
+}
+
+void level_up(Supemon *ptrSupemon) {
+    ptrSupemon->level++;
+    ptrSupemon->experience = 0;
+    ptrSupemon->experience_max += 1000;
+    
+    ptrSupemon->max_hp = round_number(ptrSupemon->max_hp * 1.05);
+    ptrSupemon->base_attack = round_number(ptrSupemon->base_attack * 1.05);
+    ptrSupemon->base_defense = round_number(ptrSupemon->base_defense * 1.05);
+    ptrSupemon->base_evasion = round_number(ptrSupemon->base_evasion * 1.05);
+    ptrSupemon->base_accuracy = round_number(ptrSupemon->base_accuracy * 1.05);
+    ptrSupemon->speed = round_number(ptrSupemon->speed * 1.05);
+    
+    ptrSupemon->hp = ptrSupemon->max_hp;
+    ptrSupemon->attack = ptrSupemon->base_attack;
+    ptrSupemon->defense = ptrSupemon->base_defense;
+    ptrSupemon->evasion = ptrSupemon->base_evasion;
+    ptrSupemon->accuracy = ptrSupemon->base_accuracy;
+}
+
+void win(Player *ptrPlayer, Supemon *ptrEnemy) {
+    short random_supecoins = rand() % 401 + 100;
+    short random_experience = rand() % 401 + 100;
+
+    char bufferStr[5];
+    write(1, "You've won ", 11);
+    sprintf(bufferStr, "%d", random_supecoins);
+    write(1, bufferStr, strlen(bufferStr));
+    write(1, " supecoins and ", 15);
+    sprintf(bufferStr, "%d", random_experience);
+    write(1, bufferStr, strlen(bufferStr));
+    write(1, " experience !\n", 14);
+
+    ptrPlayer->money += random_supecoins;
+    if (ptrPlayer->supemons[0]->experience + random_experience >= ptrPlayer->supemons[0]->experience_max) {
+        int overflow_experience = (ptrPlayer->supemons[0]->experience + random_experience) - ptrPlayer->supemons[0]->experience_max;
+        level_up(ptrPlayer->supemons[0]);
+        ptrPlayer->supemons[0]->experience += overflow_experience;
+        write(1, ptrPlayer->supemons[0]->name, strlen(ptrPlayer->supemons[0]->name));
+        write(1, " has level up !\n", 16); 
+    } else {
+        ptrPlayer->supemons[0]->experience += random_experience;
+    }
+}
+
+/*
         if (enemy == NULL) {
             srand(time(NULL));
-            int randomEnemy = rand() % 3 + 1;
-            enemy = getSupemonByID(randomEnemy);
+            int randomID = rand() % 3 + 1;
+            enemy = getSupemonByID(randomID);
             displaySupemonStats(ptrPlayer, enemy);
         }
 
-        write(1, "+----------------------------+\n" , 32);
-        write(1, "|What will you do?           |\n", 32);
-        write(1, "|    1. Move                 |\n", 32);
-        write(1, "|    2. Change Supemon       |\n", 32);
-        write(1, "|    3. Use item             |\n", 32);
-        write(1, "|    4. Capture              |\n", 32);
-        write(1, "|    5. Run away             |\n", 32);
-        write(1, "+----------------------------+\n" , 32);
-        write(1, "1, 2, 3, 4 or 5: ", 18);
-        fgets(buffer, sizeof(buffer), stdin);
-        sscanf(buffer, "%d", &choice4);
-        write(1, "\n", 1);
+            
 
         if (choice4 == 1) {
             write(1, "\n1 - Scratch\n", 14);
@@ -353,3 +730,4 @@ void displaySupemonStats(Player *ptrPlayer, Supemon *enemy) {
         ask_where_to_go(ptrPlayer);
     }
 }
+*/

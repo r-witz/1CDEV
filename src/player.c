@@ -5,6 +5,8 @@
 #include "../include/cJSON.h"
 #include "../include/player.h"
 
+#define MIN(a,b) (((a)<(b))?(a):(b))
+
 void freePlayer(Player *player) {
     if (!player) {
         return;
@@ -162,9 +164,16 @@ Player *loadPlayer(const char *filename) {
     player->potions = potionsObj->valueint;
     player->super_potions = superPotionsObj->valueint;
     player->rare_candy = rareCandyObj->valueint;
+    
+    short arraySize = cJSON_GetArraySize(supemonsArray);
+    for (short i = 0; i < 6; i++) {
+        if (i >= arraySize) {
+            player->supemons[i] = NULL;
+            continue;
+        }
 
-    cJSON *supemonObj = NULL;
-    cJSON_ArrayForEach(supemonObj, supemonsArray) {
+        cJSON *supemonObj = cJSON_GetArrayItem(supemonsArray, i);
+
         Supemon *supemon = malloc(sizeof(Supemon));
         if (!supemon) {
             perror("Memory allocation failed");
@@ -176,9 +185,9 @@ Player *loadPlayer(const char *filename) {
         supemon->name = strdup(cJSON_GetObjectItemCaseSensitive(supemonObj, "name")->valuestring);
         supemon->level = cJSON_GetObjectItemCaseSensitive(supemonObj, "level")->valueint;
         supemon->experience = cJSON_GetObjectItemCaseSensitive(supemonObj, "experience")->valueint;
-	      supemon->experience_max = cJSON_GetObjectItemCaseSensitive(supemonObj, "experience_max")->valueint;
+        supemon->experience_max = cJSON_GetObjectItemCaseSensitive(supemonObj, "experience_max")->valueint;
         supemon->hp = cJSON_GetObjectItemCaseSensitive(supemonObj, "hp")->valueint;
-        supemon->max_hp = supemon->hp;
+        supemon->max_hp = cJSON_GetObjectItemCaseSensitive(supemonObj, "max_hp")->valueint;
         supemon->attack = cJSON_GetObjectItemCaseSensitive(supemonObj, "attack")->valueint;
         supemon->base_attack = supemon->attack;
         supemon->defense = cJSON_GetObjectItemCaseSensitive(supemonObj, "defense")->valueint;
@@ -188,16 +197,10 @@ Player *loadPlayer(const char *filename) {
         supemon->accuracy = cJSON_GetObjectItemCaseSensitive(supemonObj, "accuracy")->valueint;
         supemon->base_accuracy = supemon->accuracy;
         supemon->speed = cJSON_GetObjectItemCaseSensitive(supemonObj, "speed")->valueint;
-
-
-        for (int i = 0; i < 6; i++) {
-            if (player->supemons[i] == NULL) {
-                player->supemons[i] = supemon;
-                break;
-            }
-        }
+        
+        player->supemons[i] = supemon;
     }
-
+    
     cJSON_Delete(root);
     return player;
 }

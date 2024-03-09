@@ -52,7 +52,7 @@ Player* ask_new_game() {
 void ask_where_to_go(Player *ptrPlayer) {
     int choice;
 
-    main_menu(); 
+    main_menu();
 
     do {
         get_input("1, 2, 3 or 4: ", &choice, 'i', 3);
