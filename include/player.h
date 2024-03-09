@@ -5,10 +5,9 @@
 typedef struct {
     char *name;
     int money;
-    int potions;
-    int super_potions;
-    int rare_candy;
-    int selected_supemon;
+    short potions;
+    short super_potions;
+    short rare_candy;
     Supemon *supemons[6];
 } Player;
 

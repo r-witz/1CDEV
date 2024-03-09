@@ -4,48 +4,50 @@
 
 #include "../include/player.h"
 
-void ask_where_to_go(Player *ptrPlayer);
+void get_input(char *prompt, void *output, char type, const int BUFFER_SIZE);
+void pokecenter_menu();
+void main_menu();
 
 void pokecenter(Player *ptrPlayer) {
     int choice;
-    char buffer[100];
 
-    write(1, "+----------------------------+\n" , 32);
-    write(1, "|   What do you want to do?  |\n", 32);
-    write(1, "|    1. Heal Supemons        |\n", 32);
-    write(1, "|    2. Leave the pokecenter |\n", 32);
-    write(1, "+----------------------------+\n" , 32);
+    pokecenter_menu();
 
     do {
-        write(1, "1 or 2 : ", 9); 
-        fgets(buffer, sizeof(buffer), stdin);
-        sscanf(buffer, "%d", &choice);
+        get_input("1, 2 or 3: ", &choice, 'i', 3);
 
-        if (choice == 1) {
-            for (int i=0; i<6; i++) {
-                if (ptrPlayer->supemons[i] != 0) {
-                    ptrPlayer->supemons[i]->hp = ptrPlayer->supemons[i]->max_hp;
+        switch (choice) {
+            case 1:
+                for (int i=0; i<6; i++) {
+                    if (ptrPlayer->supemons[i] != 0) {
+                        ptrPlayer->supemons[i]->hp = ptrPlayer->supemons[i]->max_hp;
+                    }
                 }
-            }
-            write(1, "Your Supemons have been healed!\n", 32);
-            for (int i=0; i<6; i++) {
-                if (ptrPlayer->supemons[i] != 0) {
-                    char hp[100];
-                    write(1, ptrPlayer->supemons[i]->name, strlen(ptrPlayer->supemons[i]->name));
-                    write(1, " has ", 5);
-                    sprintf(hp, "%d", ptrPlayer->supemons[i]->hp);
-                    write(1, hp, strlen(hp));
-                    write(1, " / ", 3);
-                    sprintf(hp, "%d", ptrPlayer->supemons[i]->max_hp);
-                    write(1, hp, strlen(hp));
-                    write(1, " HP\n", 4);
+                write(1, "Your Supemons have been healed !\n", 33);
+                break;
+            case 2:
+                for (int i=0; i<6; i++) {
+                    if (ptrPlayer->supemons[i] != 0) {
+                        char bufferStr[6];
+                        write(1, ptrPlayer->supemons[i]->name, strlen(ptrPlayer->supemons[i]->name));
+                        write(1, " lvl.", 5);
+                        sprintf(bufferStr, "%d", ptrPlayer->supemons[i]->level);
+                        write(1, bufferStr, strlen(bufferStr));
+                        write(1, "\t(", 2);
+                        sprintf(bufferStr, "%d", ptrPlayer->supemons[i]->hp);
+                        write(1, bufferStr, strlen(bufferStr));
+                        write(1, "/", 1);
+                        sprintf(bufferStr, "%d", ptrPlayer->supemons[i]->max_hp);
+                        write(1, bufferStr, strlen(bufferStr));
+                        write(1, "HP)\n", 4);
+                    }
                 }
-            }
-            ask_where_to_go(ptrPlayer);
-        } else if (choice == 2) {
-            ask_where_to_go(ptrPlayer);
-        } else {
-            write(1, "Please enter a valid number.\n", 29);
+                break;
+            case 3:
+                main_menu();
+                break;
+            default:
+                write(1, "Please enter a number between 1-3\n", 34);
         }
-    } while (choice != 1 && choice != 2);
+    } while (choice != 3);
 }
