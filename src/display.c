@@ -1,5 +1,5 @@
 #include <stdio.h> 
-
+#include <unistd.h>
 void welcome() {
     write(1, "=========================================\n", 42);
     write(1, "   ___\n", 7);
