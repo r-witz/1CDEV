@@ -11,9 +11,9 @@ void shop_menu();
 void buy_menu();
 void sell_menu();
 
-void ask_where_to_go();
+void ask_where_to_go(Player *ptrPlayer);
 void buy(Player *ptrPlayer);
-void sell();
+void sell(Player *ptrPlayer);
 int ask_quantity_buy(Player *ptrPlayer, int itemID);
 int ask_quantity_sell(Player *ptrPlayer, int itemID);
 
@@ -110,21 +110,20 @@ void sell(Player *ptrPlayer) {
 }
 
 int ask_quantity_buy(Player *ptrPlayer, int itemID) {
-    short quantity;
     short prices[] = {100, 300, 700};
-
+    short quantity;
     get_input("How much items do you want to buy: ", &quantity, 'i', 7);
-    
-    if (quantity < 0) {
-	    write(1, "You can't buy negative quantity\n",32);
-	    return 0;
-    } else if (prices[itemID-1]*quantity > ptrPlayer->money) {
-	    write(1, "You don't have enough Supcoins\n", 31);
-    	return 0;
+
+    if (quantity <= 0) {
+        write(1, "Invalid choice. Please enter a positive number.\n", 49);
+        return 0;
+    } else if (prices[itemID-1] * quantity > ptrPlayer->money) {
+        write(1, "You don't have enough Supcoins.\n", 32);
+        return 0;
     }
-    
+
     return quantity;
-} 
+}
 
 int ask_quantity_sell(Player *ptrPlayer, int itemID) {
     short quantity;
@@ -132,8 +131,8 @@ int ask_quantity_sell(Player *ptrPlayer, int itemID) {
     
     get_input("How much items do you want to sell: ", &quantity, 'i', 7);
 
-    if (quantity < 0) {
-	    write(1, "You can't sell negative quantity\n",33);
+    if (quantity <= 0) {
+        write(1, "Invalid choice. Please enter a positive number.\n", 49);
 	    return 0;
     } else if (playerQuantities[itemID-1] < quantity) {
 	    write(1, "You don't have enough of the item\n", 34);
