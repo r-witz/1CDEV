@@ -25,7 +25,8 @@ int ask_supemon(Player *ptrPlayer) {
             break;
         }
     } while (1); 
-
-    printf("You chose %s\n", ptrPlayer->supemons[0]->name);
+    write(1, "You chose ", 10);
+    write(1, ptrPlayer->supemons[0]->name, strlen(ptrPlayer->supemons[0]->name));
+    write(1, "\n", 1);
     return 0;
 }

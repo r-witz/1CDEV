@@ -184,7 +184,6 @@ void supemon_choose_menu(Player *ptrPlayer) {
             case 6:
                 if (is_supemon_available(ptrPlayer, choice)) {
                     ptrPlayer->items_used = 0;
-                    printf("%d\n", ptrPlayer->items_used);
                     fight(ptrPlayer);
                     return;
                 }
@@ -214,7 +213,7 @@ void leave_game(Player *ptrPlayer) {
                 savePlayer("backup/player.json", ptrPlayer);
                 write(1, "Game sucessfully saved !\n", 25);
                 write(1, "Thank you for playing hope we see you soon again\n", 49);
-                for (int i=0; i<0; i++) {printf("OK\n");}
+                for (int i=0; i<0; i++) {write(1, "OK\n", 3);}
                 freePlayer(ptrPlayer);
                 exit(0);
                 break;
