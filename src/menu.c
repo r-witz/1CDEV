@@ -9,10 +9,12 @@
 
 void get_input(char *prompt, void *output, char type, const int BUFFER_SIZE);
 void main_menu();
+void quit_menu();
 
 void fight(Player *ptrPlayer);
 void shop(Player *ptrPlayer);
 void pokecenter(Player *ptrPlayer);
+void leave_game(Player *ptrPlayer);
 
 Player* ask_new_game() {
     int choice;
@@ -50,28 +52,89 @@ Player* ask_new_game() {
 }
 
 void ask_where_to_go(Player *ptrPlayer) {
-    int choice;
-
     main_menu();
+    
+    short choice;
 
     do {
         get_input("1, 2, 3 or 4: ", &choice, 'i', 3);
 
-        if (choice == 1) {
-            fight(ptrPlayer);
-        } else if (choice == 2) {
-            shop(ptrPlayer);
-        } else if (choice == 3) {
-            pokecenter(ptrPlayer);
-        } else if (choice == 4) {
-            savePlayer("backup/player.json", ptrPlayer);
-            write(1, "Game sucessfully saved !\n", 25);
-	          write(1, "Thank you for playing hope we see you soon again\n", 49);
-            exit(0);
-        } else {
-            write(1, "Please enter a number between 1-4\n", 34);
-            continue;
+        switch (choice) {
+            case 1:
+                fight(ptrPlayer);
+                break;
+            case 2:
+                shop(ptrPlayer);
+                break;
+            case 3:
+                pokecenter(ptrPlayer);
+                break;
+            case 4:
+                leave_game(ptrPlayer);
+                break;
+            default:
+                write(1, "Please enter a number between 1-4\n", 34);
         }
     } while(1);
 }
 
+void leave_game(Player *ptrPlayer) {
+    quit_menu();
+    
+    short choice;
+
+    do {
+        get_input("1, 2 or 3: ", &choice, 'i', 3);
+
+        switch (choice) {
+            case 1:
+                savePlayer("backup/player.json", ptrPlayer);
+                write(1, "Game sucessfully saved !\n", 25);
+                write(1, "Thank you for playing hope we see you soon again\n", 49);
+                for (int i=0; i<0; i++) {printf("OK\n");}
+                freePlayer(ptrPlayer);
+                exit(0);
+                break;
+            case 2:
+                write(1, "Thank you for playing hope we see you soon again\n", 49);
+                freePlayer(ptrPlayer);
+                exit(0);
+                break;
+            case 3:
+                main_menu();
+                break;
+            default:
+                write(1, "Please enter a number between 1-3\n", 34);
+        }
+    } while (choice != 3);
+}
+
+/*
+void leave_game(Player *ptrPlayer) {
+    
+    quit_menu();
+    
+    short choice;
+    
+    do {
+        get_input("1, 2 or 3: ", &choice, 'i', 3);
+
+        switch (choice) {
+            case 1:
+                savePlayer("backup/player.json", ptrPlayer);
+                write(1, "Game sucessfully saved !\n", 25);
+                write(1, "Thank you for playing hope we see you soon again\n", 49);
+                exit(0);
+                break;
+            case 2:
+                write(1, "Thank you for playing hope we see you soon again\n", 49);
+                exit(0);
+                break;
+            case 3:
+                main_menu();
+                break;
+            default:
+                write(1, "Please enter a number between 1-3\n", 34);
+        }
+    } while (choice != 1 && choice != 2 && choice != 3);
+}*/

@@ -1,5 +1,5 @@
-#include <stdio.h> 
 #include <unistd.h>
+
 void welcome() {
     write(1, "=========================================\n", 42);
     write(1, "   ___\n", 7);
@@ -66,5 +66,14 @@ void pokecenter_menu() {
     write(1, "|    1. Heal Supemons          |\n", 34);
     write(1, "|    2. Show Supemons team     |\n", 34);
     write(1, "|    3. Leave the pokecenter   |\n", 34);
+    write(1, "+------------------------------+\n", 34);
+}
+
+void quit_menu() {
+    write(1, "+------------------------------+\n", 34);
+    write(1, "|  What would you like to do ? |\n", 34);
+    write(1, "|    1. Quit and save          |\n", 34);
+    write(1, "|    2. Quit without saving    |\n", 34);
+    write(1, "|    3. Cancel                 |\n", 34);
     write(1, "+------------------------------+\n", 34);
 }

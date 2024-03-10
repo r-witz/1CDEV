@@ -9,9 +9,9 @@ void pokecenter_menu();
 void main_menu();
 
 void pokecenter(Player *ptrPlayer) {
-    int choice;
-
     pokecenter_menu();
+    
+    short choice;
 
     do {
         get_input("1, 2 or 3: ", &choice, 'i', 3);
