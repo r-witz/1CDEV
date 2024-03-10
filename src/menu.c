@@ -15,6 +15,7 @@ void quit_menu();
 void fight(Player *ptrPlayer);
 void shop(Player *ptrPlayer);
 void pokecenter(Player *ptrPlayer);
+void supemon_choose_menu(Player *ptrPlayer);
 void leave_game(Player *ptrPlayer);
 
 Player* ask_new_game() {
@@ -62,7 +63,14 @@ void ask_where_to_go(Player *ptrPlayer) {
 
         switch (choice) {
             case 1:
-                fight(ptrPlayer);
+                for (int i=0; i<6; i++) {
+                    if (ptrPlayer->supemons[i] != 0) {
+                        if (ptrPlayer->supemons[i]->hp > 0) {
+                            supemon_choose_menu(ptrPlayer);
+                            break;
+                        }
+                    }
+                }
                 break;
             case 2:
                 shop(ptrPlayer);
@@ -78,6 +86,72 @@ void ask_where_to_go(Player *ptrPlayer) {
         }
     } while(1);
 }
+
+int is_supemon_available(Player *ptrPlayer, int index) {
+    if (1 <= index && index <= 6) {
+        if (ptrPlayer->supemons[index-1] != NULL) {
+            if (ptrPlayer->supemons[index-1]->hp > 0) {
+                return 1;
+            } else {
+                write(1, "Your Supemon is K.O.\n", 21);
+                return 0;
+            }
+        } else {
+            write(1, "No supemon at this position in your team\n", 41);
+            return 0;
+        }
+    }
+    return 0;
+}
+
+void supemon_choose_menu(Player *ptrPlayer) {
+    write(1, "Your supemon team :\n", 20);
+
+    for (int i = 0; i < 6; i++) {
+        if (ptrPlayer->supemons[i] != NULL) {
+            char bufferStr[7];
+            write(1, ptrPlayer->supemons[i]->name, strlen(ptrPlayer->supemons[i]->name));
+            write(1, " lvl.", 5);
+            sprintf(bufferStr, "%d", ptrPlayer->supemons[i]->level);
+            write(1, bufferStr, strlen(bufferStr));
+            write(1, " (", 2);
+            sprintf(bufferStr, "%d", ptrPlayer->supemons[i]->hp);
+            write(1, bufferStr, strlen(bufferStr));
+            write(1, "/", 1);
+            sprintf(bufferStr, "%d", ptrPlayer->supemons[i]->max_hp);
+            write(1, bufferStr, strlen(bufferStr));
+            write(1, "HP)\n", 4);
+        }
+    }
+
+    short choice;
+
+    do {
+        get_input("Which supemon do you want to summon (1-6, or 0 to cancel): ", &choice, 'i', 3);
+
+        switch (choice) {
+            case 0:
+                write(1, "Summoning canceled\n", 19);
+                ask_where_to_go(ptrPlayer);
+                return;
+            case 1:
+            case 2:
+            case 3:
+            case 4:
+            case 5:
+            case 6:
+                if (is_supemon_available(ptrPlayer, choice)) {
+                    fight(ptrPlayer);
+                    return;
+                }
+                break;
+            default:
+                write(1, "Please enter a number between 0-6\n", 35);
+        }
+    } while (1);
+}
+
+
 
 void leave_game(Player *ptrPlayer) {
     quit_menu();
