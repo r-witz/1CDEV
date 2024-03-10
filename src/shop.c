@@ -45,6 +45,11 @@ void buy(Player *ptrPlayer) {
     int choice;
     
     buy_menu();
+    char bufferStr[7];
+    write(1, "You have ", 9);
+    sprintf(bufferStr, "%d", ptrPlayer->money);
+    write(1, bufferStr, strlen(bufferStr));
+    write(1, " Supcoins\n", 10);
 
     do {
         int quantity;
@@ -79,6 +84,19 @@ void sell(Player *ptrPlayer) {
     int choice;
 
     sell_menu();
+    char bufferStr[7];
+    write(1, "You have ", 9);
+    sprintf(bufferStr, "%d", ptrPlayer->potions);
+    write(1, bufferStr, strlen(bufferStr));
+    write(1, " Potions, ", 10);
+    write(1, "You have ", 9);
+    sprintf(bufferStr, "%d", ptrPlayer->super_potions);
+    write(1, bufferStr, strlen(bufferStr));
+    write(1, " Super Potions, ", 16);
+    write(1, "You have ", 9);
+    sprintf(bufferStr, "%d", ptrPlayer->rare_candy);  
+    write(1, bufferStr, strlen(bufferStr));
+    write(1, " Rare Candies\n", 14);      
 
     do {
         int quantity;
