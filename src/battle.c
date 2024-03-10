@@ -52,8 +52,9 @@ void fight(Player *ptrPlayer) {
         Supemon *ptrSupemon = ptrPlayer->supemons[0];
         
         switch (choice) {
+            int moveID;
             case 1:
-                int moveID = ask_move(ptrSupemon);
+                moveID = ask_move(ptrSupemon);
                 if (moveID != -1) {
                     if (ptrSupemon->speed > ptrEnemy->speed) {
                         playing = supemon_move(ptrPlayer, ptrEnemy, moveID);
