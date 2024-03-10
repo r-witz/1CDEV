@@ -205,7 +205,7 @@ int move(Player *ptrPlayer, Supemon *ptrEnemy) {
     Supemon *ptrSupemon = ptrPlayer->supemons[0];
     for (short i=0; i<2; i++) {
         char bufferStr[10];
-        sprintf(bufferStr, "%d", i);
+        sprintf(bufferStr, "%d", i+1);
         write(1, bufferStr, strlen(bufferStr));
         write(1, ". ", 2);
         write(1, ptrSupemon->moves[i]->name, strlen(ptrSupemon->moves[i]->name));
