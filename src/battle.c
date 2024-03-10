@@ -31,7 +31,7 @@ void fight(Player *ptrPlayer) {
         level_up(ptrEnemy);
     }
 
-    char bufferStr[3];
+    char bufferStr[7];
     write(1, "You've stumbled against a lvl.", 30);
     sprintf(bufferStr, "%d", ptrEnemy->level);
     write(1, bufferStr, strlen(bufferStr));
@@ -118,7 +118,7 @@ int move(Player *ptrPlayer, Supemon *ptrEnemy) {
     Supemon *ptrSupemon = ptrPlayer->supemons[0];
     for (short i=0; i<2; i++) {
         char bufferStr[10];
-        sprintf(bufferStr, "%d", i);
+        sprintf(bufferStr, "%d", i+1);
         write(1, bufferStr, strlen(bufferStr));
         write(1, ". ", 2);
         write(1, ptrSupemon->moves[i]->name, strlen(ptrSupemon->moves[i]->name));
@@ -198,7 +198,7 @@ int use_move(Supemon *ptrSupemon, Supemon *ptrEnemy, short moveID) {
 int change_supemon(Player *ptrPlayer) {
     write(1, "+------------Your Team-----------+\n", 35);
     for (short i=0; i<6; i++) {
-        char bufferStr[6];
+        char bufferStr[7];
         sprintf(bufferStr, "%d", i+1);
         write(1, bufferStr, strlen(bufferStr));
         write(1, ". ", 2);
@@ -288,7 +288,7 @@ int capture(Player *ptrPlayer, Supemon *ptrEnemy) {
             write(1, "What Supemon do you want to replace ?\n", 38);
 
             for (short i=0; i<6; i++) {
-                char bufferStr[6];
+                char bufferStr[7];
                 sprintf(bufferStr, "%d", i+1);
                 write(1, bufferStr, strlen(bufferStr));
                 write(1, ". ", 2);

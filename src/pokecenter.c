@@ -28,7 +28,7 @@ void pokecenter(Player *ptrPlayer) {
             case 2:
                 for (int i=0; i<6; i++) {
                     if (ptrPlayer->supemons[i] != 0) {
-                        char bufferStr[6];
+                        char bufferStr[7];
                         write(1, ptrPlayer->supemons[i]->name, strlen(ptrPlayer->supemons[i]->name));
                         write(1, " lvl.", 5);
                         sprintf(bufferStr, "%d", ptrPlayer->supemons[i]->level);
