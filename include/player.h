@@ -8,6 +8,7 @@ typedef struct {
     short potions;
     short super_potions;
     short rare_candy;
+    short items_used;
     Supemon *supemons[6];
 } Player;
 
