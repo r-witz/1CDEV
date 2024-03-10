@@ -89,7 +89,7 @@ void ask_where_to_go(Player *ptrPlayer) {
     main_menu();
     
     short choice;
-    short alive_supemon = 0;
+    short alive_supemon;
 
     do {
         get_input("1, 2, 3 or 4: ", &choice, 'i', 3);
@@ -97,6 +97,7 @@ void ask_where_to_go(Player *ptrPlayer) {
         switch (choice) {
             case 1:
                 for (int i=0; i<6; i++) {
+                    alive_supemon = 0;
                     if (ptrPlayer->supemons[i] != 0) {
                         if (ptrPlayer->supemons[i]->hp > 0) {
                             alive_supemon = 1;
@@ -175,13 +176,15 @@ void supemon_choose_menu(Player *ptrPlayer) {
 
         switch (choice) {
             case 0:
-                            case 1:
+            case 1:
             case 2:
             case 3:
             case 4:
             case 5:
             case 6:
                 if (is_supemon_available(ptrPlayer, choice)) {
+                    ptrPlayer->items_used = 0;
+                    printf("%d\n", ptrPlayer->items_used);
                     fight(ptrPlayer);
                     return;
                 }
