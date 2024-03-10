@@ -88,8 +88,11 @@ void fight(Player *ptrPlayer) {
                 }
                 break;
             case 3:
-                playing = use_item(ptrPlayer);
-                playing = enemy_move(ptrSupemon, ptrEnemy);
+                if (use_item(ptrPlayer)) {
+                    playing = enemy_move(ptrSupemon, ptrEnemy);
+                } else {
+                    playing = 1;
+                }
                 break;
             case 4:
                 playing = capture(ptrPlayer, ptrEnemy);
@@ -102,6 +105,7 @@ void fight(Player *ptrPlayer) {
                 playing = enemy_move(ptrSupemon, ptrEnemy);
                 break;
             default:
+                playing = 1;
                 write(1, "Please enter a number between 1-5\n", 34);
         }
     } while(playing);
@@ -320,58 +324,76 @@ int use_item(Player *ptrPlayer) {
     write(1, bufferStr, strlen(bufferStr));
     write(1, ")\n", 2);
     write(1, "4. Cancel\n", 10);
-    short choice;
-    get_input("1, 2, 3 or 4: ", &choice, 'i', 3);
 
-    switch (choice) {
-        case 1:
-            if (ptrPlayer->potions > 0 && ptrPlayer->items_used < 4) {
-                ptrPlayer->potions--;
-                ptrPlayer->supemons[0]->hp += 5;
-                if (ptrPlayer->supemons[0]->hp > ptrPlayer->supemons[0]->max_hp) {
-                    ptrPlayer->supemons[0]->hp = ptrPlayer->supemons[0]->max_hp;
+    short choice;
+    short is_item_used;
+
+    do {
+        get_input("1, 2, 3 or 4: ", &choice, 'i', 3);
+        
+        switch (choice) {
+            case 1:
+                if (ptrPlayer->potions > 0 && ptrPlayer->items_used < 4) {
+                    is_item_used = 1;
+                    ptrPlayer->potions--;
+                    ptrPlayer->supemons[0]->hp += 5;
+                    if (ptrPlayer->supemons[0]->hp > ptrPlayer->supemons[0]->max_hp) {
+                        ptrPlayer->supemons[0]->hp = ptrPlayer->supemons[0]->max_hp;
+                    }
+                    write(1, "You used a potion\n", 18);
+                    ptrPlayer->items_used++;
+                } else if (ptrPlayer->items_used >= 4) {
+                    is_item_used = 0;
+                    write(1, "You have reached the maximum number of items used in this battle\n", 65);
+                } else {
+                    is_item_used = 0;
+                    write(1, "You don't have any potion\n", 26);
                 }
-                write(1, "You used a potion\n", 18);
-                ptrPlayer->items_used++;
-            } else if (ptrPlayer->items_used >= 4) {
-                write(1, "You have reached the maximum number of items used in this battle\n", 65);
-            } else {
-                write(1, "You don't have any potion\n", 26);
-            }
-            break;
-        case 2:
-            if (ptrPlayer->super_potions > 0 && ptrPlayer->items_used < 4) {
-                ptrPlayer->super_potions--;
-                ptrPlayer->supemons[0]->hp += 10;
-                if (ptrPlayer->supemons[0]->hp > ptrPlayer->supemons[0]->max_hp) {
-                    ptrPlayer->supemons[0]->hp = ptrPlayer->supemons[0]->max_hp;
+                break;
+            case 2:
+                if (ptrPlayer->super_potions > 0 && ptrPlayer->items_used < 4) {
+                    is_item_used = 1;
+                    ptrPlayer->super_potions--;
+                    ptrPlayer->supemons[0]->hp += 10;
+                    if (ptrPlayer->supemons[0]->hp > ptrPlayer->supemons[0]->max_hp) {
+                        ptrPlayer->supemons[0]->hp = ptrPlayer->supemons[0]->max_hp;
+                    }
+                    write(1, "You used a super potion\n", 24);
+                    ptrPlayer->items_used++;
+                } else if (ptrPlayer->items_used >= 4) {
+                    is_item_used = 0;
+                    write(1, "You have reached the maximum number of items used in this battle\n", 65);
+                } else {
+                    is_item_used = 0;
+                    write(1, "You don't have any super potion\n", 32);
                 }
-                write(1, "You used a super potion\n", 24);
-                ptrPlayer->items_used++;
-            } else if (ptrPlayer->items_used >= 4) {
-                write(1, "You have reached the maximum number of items used in this battle\n", 65);
-            } else {
-                write(1, "You don't have any super potion\n", 32);
-            }
-            break;
-        case 3:
-            if (ptrPlayer->rare_candy > 0 && ptrPlayer->items_used < 4) {
-                ptrPlayer->rare_candy--;
-                ptrPlayer->supemons[0]->level += 1;
-                write(1, "You used a rare candy\n", 22);
-                ptrPlayer->items_used++;
-            } else if (ptrPlayer->items_used >= 4) {
-                write(1, "You have reached the maximum number of items used in this battle\n", 65);
-            } else {
-                write(1, "You don't have any rare candy\n", 30);
-            }
-            break;
-        case 4:
-            write(1, "You canceled\n", 14);
-            break;
-        default:
-            write(1, "Invalid choice\n", 16);
-    }
+                break;
+            case 3:
+                if (ptrPlayer->rare_candy > 0 && ptrPlayer->items_used < 4) {
+                    is_item_used = 1;
+                    ptrPlayer->rare_candy--;
+                    level_up(ptrPlayer->supemons[0]);
+                    write(1, "You used a rare candy\n", 22);
+                    ptrPlayer->items_used++;
+                } else if (ptrPlayer->items_used >= 4) {
+                    is_item_used = 0;
+                    write(1, "You have reached the maximum number of items used in this battle\n", 65);
+                } else {
+                    is_item_used = 0;
+                    write(1, "You don't have any rare candy\n", 30);
+                }
+                break;
+            case 4:
+                is_item_used = 1;
+                write(1, "You canceled\n", 14);
+                return 0;
+                break;
+            default:
+                is_item_used = 0;
+                write(1, "Invalid choice\n", 16);
+        }
+    } while (is_item_used == 0);
+
     return 1;
 }
 
