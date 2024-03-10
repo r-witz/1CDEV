@@ -2,11 +2,9 @@
 #include <unistd.h>
 #include <string.h>
 
+#include "../include/display.h"
+#include "../include/input.h"
 #include "../include/player.h"
-
-void get_input(char *prompt, void *output, char type, const int BUFFER_SIZE);
-void pokecenter_menu();
-void main_menu();
 
 void pokecenter(Player *ptrPlayer) {
     pokecenter_menu();

@@ -2,20 +2,14 @@
 #include <unistd.h>
 #include <string.h>
 
-#include "../include/starter.h"
-
-Supemon *getSupemonByID(int id);
-void get_input(char *prompt, void *output, char type, const int BUFFER_SIZE);
+#include "../include/display.h"
+#include "../include/input.h"
+#include "../include/player.h"
 
 int ask_supemon(Player *ptrPlayer) {    
     int choice;
 
-    write(1, "+------------------------------+\n", 33);
-    write(1, "|  Choose your Supemon :       |\n", 33);
-    write(1, "|    1. Supmander              |\n", 33);
-    write(1, "|    2. Supasaur               |\n", 33);
-    write(1, "|    3. Supirtle               |\n", 33);
-    write(1, "+------------------------------+\n", 33);
+    starter_menu();
 
     do {
         get_input("1, 2 or 3: ", &choice, 'i', 3);

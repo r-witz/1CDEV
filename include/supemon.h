@@ -1,4 +1,4 @@
-#include <stdio.h>
+#pragma once
 
 typedef struct {
     char *name;
@@ -26,3 +26,6 @@ typedef struct {
     short speed;
     Move *moves[2];
 } Supemon;
+
+Supemon *getSupemonByID(int id);
+void freeSupemon(Supemon *ptrSupemon);

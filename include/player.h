@@ -12,7 +12,7 @@ typedef struct {
     Supemon *supemons[6];
 } Player;
 
-void freeSupemon(Supemon *ptrSupemon);
+void freePlayer(Player *player);
 Player *createPlayer();
-Player *loadPlayer(const char *filename);
 void savePlayer(const char *filename, Player *player);
+Player *loadPlayer(const char *filename);

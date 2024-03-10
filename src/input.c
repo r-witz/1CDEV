@@ -1,12 +1,6 @@
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-
-void empty_buffer() {
-    int c;
-    while ((c = getchar()) != '\n' && c != EOF) {}
-}
 
 void get_input(char *prompt, void *output, char type, const int BUFFER_SIZE) {
     char buffer[BUFFER_SIZE];

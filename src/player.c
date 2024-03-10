@@ -14,7 +14,7 @@ void freePlayer(Player *player) {
 
     free(player->name);
 
-    for (int i = 0; i < 6; i++) {
+for (int i = 0; i < 6; i++) {
         if (player->supemons[i]) {
             freeSupemon(player->supemons[i]);
         }

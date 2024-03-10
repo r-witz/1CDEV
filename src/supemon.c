@@ -7,6 +7,17 @@
 
 #define MAX_MOVES 2
 
+void freeSupemon(Supemon *ptrSupemon) {
+    free(ptrSupemon->name);
+    for (int i = 0; i < MAX_MOVES; ++i) {
+      if (ptrSupemon->moves[i]) {
+        free(ptrSupemon->moves[i]->name);
+        free(ptrSupemon->moves[i]);
+      }
+    }
+    free(ptrSupemon);
+}
+
 Supemon *getSupemonByID(int id) {
 
   FILE *supemonFile = fopen("backup/supemon.json", "r");
@@ -179,15 +190,4 @@ Supemon *getSupemonByID(int id) {
   cJSON_Delete(supemonRoot);
   free(supemonJsonBuffer);
   return NULL;
-}
-
-void freeSupemon(Supemon *ptrSupemon) {
-    free(ptrSupemon->name);
-    for (int i = 0; i < MAX_MOVES; ++i) {
-      if (ptrSupemon->moves[i]) {
-        free(ptrSupemon->moves[i]->name);
-        free(ptrSupemon->moves[i]);
-      }
-    }
-    free(ptrSupemon);
 }

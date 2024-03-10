@@ -3,15 +3,10 @@
 #include <unistd.h>
 #include <string.h>
 
+#include "../include/display.h"
+#include "../include/input.h"
 #include "../include/player.h"
 
-void get_input(char *prompt, void *output, char type, const int BUFFER_SIZE);
-void main_menu();
-void shop_menu();
-void buy_menu();
-void sell_menu();
-
-void ask_where_to_go(Player *ptrPlayer);
 void buy(Player *ptrPlayer);
 void sell(Player *ptrPlayer);
 int ask_quantity_buy(Player *ptrPlayer, int itemID);

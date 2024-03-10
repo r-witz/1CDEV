@@ -1,5 +1,3 @@
-#pragma once 
-
-#include "../include/player.h"
+#pragma once
 
 void fight(Player *ptrPlayer);

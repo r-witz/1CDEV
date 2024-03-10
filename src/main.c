@@ -1,6 +1,6 @@
-#include "../include/menu.h"
+#include "../include/display.h"
 #include "../include/player.h"
-
+#include "../include/menu.h"
 
 int main()
 {   
