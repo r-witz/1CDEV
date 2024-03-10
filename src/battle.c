@@ -32,7 +32,7 @@ void fight(Player *ptrPlayer) {
         level_up(ptrEnemy);
     }
 
-    char bufferStr[3];
+    char bufferStr[7];
     write(1, "You've stumbled against a lvl.", 30);
     sprintf(bufferStr, "%d", ptrEnemy->level);
     write(1, bufferStr, strlen(bufferStr));
@@ -76,6 +76,7 @@ void fight(Player *ptrPlayer) {
                 break;
             case 3:
                 playing = use_item(ptrPlayer);
+                playing = enemy_move(ptrPlayer->supemons[0], ptrEnemy);
                 break;
             case 4:
                 playing = capture(ptrPlayer, ptrEnemy);
@@ -96,7 +97,7 @@ void fight(Player *ptrPlayer) {
 }
 
 int use_item(Player *ptrPlayer) {
-    char bufferStr[3];
+    char bufferStr[7];
 
     write(1, "You have:\n", 10);
     write(1, "1. Potion ", 10);
@@ -129,7 +130,7 @@ int use_item(Player *ptrPlayer) {
                 write(1, "You used a potion\n", 18);
                 ptrPlayer->items_used++;
             } else if (ptrPlayer->items_used >= 4) {
-                write(1, "You have reached the maximum number of items used in this battle\n", 68);
+                write(1, "You have reached the maximum number of items used in this battle\n", 65);
             } else {
                 write(1, "You don't have any potion\n", 26);
             }
@@ -144,7 +145,7 @@ int use_item(Player *ptrPlayer) {
                 write(1, "You used a super potion\n", 24);
                 ptrPlayer->items_used++;
             } else if (ptrPlayer->items_used >= 4) {
-                write(1, "You have reached the maximum number of items used in this battle\n", 68);
+                write(1, "You have reached the maximum number of items used in this battle\n", 65);
             } else {
                 write(1, "You don't have any super potion\n", 32);
             }
@@ -156,7 +157,7 @@ int use_item(Player *ptrPlayer) {
                 write(1, "You used a rare candy\n", 22);
                 ptrPlayer->items_used++;
             } else if (ptrPlayer->items_used >= 4) {
-                write(1, "You have reached the maximum number of items used in this battle\n", 68);
+                write(1, "You have reached the maximum number of items used in this battle\n", 65);
             } else {
                 write(1, "You don't have any rare candy\n", 30);
             }
@@ -204,7 +205,7 @@ void stats_display(Player *ptrPlayer, Supemon *ptrEnemy) {
 int move(Player *ptrPlayer, Supemon *ptrEnemy) {
     Supemon *ptrSupemon = ptrPlayer->supemons[0];
     for (short i=0; i<2; i++) {
-        char bufferStr[10];
+        char bufferStr[7];
         sprintf(bufferStr, "%d", i+1);
         write(1, bufferStr, strlen(bufferStr));
         write(1, ". ", 2);
@@ -222,13 +223,14 @@ int move(Player *ptrPlayer, Supemon *ptrEnemy) {
             case 1:
             case 2:
                 write(1, "You use ", 8);
-                printf("%p\n", ptrSupemon->moves[-1]->name);
-                printf("%p\n", ptrSupemon->moves[0]->name);              
+                write(1, ptrSupemon->moves[choice-1]->name, strlen(ptrSupemon->moves[choice-1]->name));
                 write(1, " !\n", 3);
                 if (use_move(ptrSupemon, ptrEnemy, choice-1) == 0) {
                     write(1, "You've won the battle !\n", 24);
                     win(ptrPlayer, ptrEnemy);
+                    freeSupemon(ptrEnemy);
                     return 0;
+                    }
                 }
                 break;
             case 3:
@@ -248,7 +250,9 @@ int enemy_move(Supemon *ptrSupemon, Supemon *ptrEnemy) {
     write(1, " uses ", 6);
     write(1, ptrEnemy->moves[move_selected]->name, strlen(ptrEnemy->moves[move_selected]->name));
     write(1, " !\n", 3);
-    return use_move(ptrEnemy, ptrSupemon, move_selected);
+    short win = use_move(ptrEnemy, ptrSupemon, move_selected);
+    if (win == 0) {freeSupemon(ptrEnemy);}
+    return win;
 }
 
 int use_move(Supemon *ptrSupemon, Supemon *ptrEnemy, short moveID) {
@@ -286,7 +290,7 @@ int use_move(Supemon *ptrSupemon, Supemon *ptrEnemy, short moveID) {
 int change_supemon(Player *ptrPlayer) {
     write(1, "+------------Your Team-----------+\n", 35);
     for (short i=0; i<6; i++) {
-        char bufferStr[6];
+        char bufferStr[7];
         sprintf(bufferStr, "%d", i+1);
         write(1, bufferStr, strlen(bufferStr));
         write(1, ". ", 2);
@@ -376,7 +380,7 @@ int capture(Player *ptrPlayer, Supemon *ptrEnemy) {
             write(1, "What Supemon do you want to replace ?\n", 38);
 
             for (short i=0; i<6; i++) {
-                char bufferStr[6];
+                char bufferStr[7];
                 sprintf(bufferStr, "%d", i+1);
                 write(1, bufferStr, strlen(bufferStr));
                 write(1, ". ", 2);
@@ -472,7 +476,7 @@ void win(Player *ptrPlayer, Supemon *ptrEnemy) {
     short random_supecoins = rand() % 401 + 100;
     short random_experience = rand() % 401 + 100;
 
-    char bufferStr[5];
+    char bufferStr[7];
     write(1, "You've won ", 11);
     sprintf(bufferStr, "%d", random_supecoins);
     write(1, bufferStr, strlen(bufferStr));
