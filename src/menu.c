@@ -8,6 +8,7 @@
 #include "../include/starter.h"
 
 void get_input(char *prompt, void *output, char type, const int BUFFER_SIZE);
+void freePlayer(Player *player);
 void main_menu();
 void quit_menu();
 
