@@ -55,16 +55,28 @@ void buy(Player *ptrPlayer) {
                 quantity = ask_quantity_buy(ptrPlayer, 1);
                 ptrPlayer->potions += quantity;
                 ptrPlayer->money -= quantity * 100;
+                write(1, "You bought ", 11);
+                sprintf(bufferStr, "%d", quantity);
+                write(1, bufferStr, strlen(bufferStr));
+                write(1, " Potions\n", 9);
                 break;
             case 2:
                 quantity = ask_quantity_buy(ptrPlayer, 2);
                 ptrPlayer->super_potions += quantity;
                 ptrPlayer->money -= quantity * 300;
+                write(1, "You bought ", 11);
+                sprintf(bufferStr, "%d", quantity);
+                write(1, bufferStr, strlen(bufferStr));
+                write(1, " Super Potions\n", 15);
                 break;
             case 3:
                 quantity = ask_quantity_buy(ptrPlayer, 3);
                 ptrPlayer->rare_candy += quantity;
                 ptrPlayer->money -= quantity * 700;
+                write(1, "You bought ", 11);
+                sprintf(bufferStr, "%d", quantity);
+                write(1, bufferStr, strlen(bufferStr));
+                write(1, " Rare Candies\n", 14);                
                 break;
             case 4:
                 shop_menu();
@@ -102,16 +114,40 @@ void sell(Player *ptrPlayer) {
                 quantity = ask_quantity_sell(ptrPlayer, 1);
                 ptrPlayer->potions -= quantity;
                 ptrPlayer->money += quantity * 50;
+                write(1, "You sold ", 9);
+                sprintf(bufferStr, "%d", quantity);
+                write(1, bufferStr, strlen(bufferStr));
+                write(1, " Potions\n", 9);
+                write(1, "For a total of ", 15);
+                sprintf(bufferStr, "%d", quantity * 50);
+                write(1, bufferStr, strlen(bufferStr));
+                write(1, " Supcoins\n", 11);
                 break;
             case 2:
                 quantity = ask_quantity_sell(ptrPlayer, 2);
                 ptrPlayer->super_potions -= quantity;
                 ptrPlayer->money += quantity * 150;
+                write(1, "You sold ", 9);
+                sprintf(bufferStr, "%d", quantity);
+                write(1, bufferStr, strlen(bufferStr));
+                write(1, " Super Potions\n", 15);
+                write(1, "For a total of ", 15);
+                sprintf(bufferStr, "%d", quantity * 150);
+                write(1, bufferStr, strlen(bufferStr));
+                write(1, " Supcoins\n", 11);
                 break;
             case 3:
                 quantity = ask_quantity_sell(ptrPlayer, 3);
                 ptrPlayer->rare_candy -= quantity;
                 ptrPlayer->money += quantity * 350;
+                write(1, "You sold ", 9);
+                sprintf(bufferStr, "%d", quantity);
+                write(1, bufferStr, strlen(bufferStr));
+                write(1, " Rare Candies\n", 14);
+                write(1, "For a total of ", 15);
+                sprintf(bufferStr, "%d", quantity * 350);
+                write(1, bufferStr, strlen(bufferStr));
+                write(1, " Supcoins\n", 11);
                 break;
             case 4:
                 shop_menu();
