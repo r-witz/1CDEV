@@ -75,6 +75,8 @@ void fight(Player *ptrPlayer) {
                             playing = supemon_move(ptrPlayer, ptrEnemy, moveID);
                         }
                     }
+                } else {
+                    playing = 1;
                 }
                 break;
             case 2:
