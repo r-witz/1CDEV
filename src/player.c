@@ -86,8 +86,22 @@ void savePlayer(const char *filename, Player *player) {
             cJSON_AddNumberToObject(supemonObj, "base_accuracy", supemon->base_accuracy);
             cJSON_AddNumberToObject(supemonObj, "speed", supemon->speed);
 
-            cJSON_AddItemToArray(supemonsArray, supemonObj);
-        }
+            cJSON *movesArray = cJSON_CreateArray();
+            for (int j = 0; j < 2; j++) {
+                Move *move = supemon->moves[j];
+                if (move) {
+                    cJSON *moveObj = cJSON_CreateObject();
+                    cJSON_AddStringToObject(moveObj, "name", move->name);
+                    cJSON_AddNumberToObject(moveObj, "damage", move->damage);
+                    cJSON_AddNumberToObject(moveObj, "attack_bonus", move->attack_bonus);
+                    cJSON_AddNumberToObject(moveObj, "defense_bonus", move->defense_bonus);
+                    cJSON_AddNumberToObject(moveObj, "evasion_bonus", move->evasion_bonus);
+                    cJSON_AddItemToArray(movesArray, moveObj);
+                }
+            }
+            cJSON_AddItemToObject(supemonObj, "moves", movesArray);
+
+            cJSON_AddItemToArray(supemonsArray, supemonObj);        }
     }
 
     cJSON_AddItemToObject(root, "supemons", supemonsArray);
@@ -198,6 +212,18 @@ Player *loadPlayer(const char *filename) {
         supemon->base_accuracy = supemon->accuracy;
         supemon->speed = cJSON_GetObjectItemCaseSensitive(supemonObj, "speed")->valueint;
         
+        cJSON *movesArray = cJSON_GetObjectItemCaseSensitive(supemonObj, "moves");
+        for (int j = 0; j < cJSON_GetArraySize(movesArray); j++) {
+            cJSON *moveObj = cJSON_GetArrayItem(movesArray, j);
+            Move *move = malloc(sizeof(Move));
+            move->name = strdup(cJSON_GetObjectItemCaseSensitive(moveObj, "name")->valuestring);
+            move->damage = cJSON_GetObjectItemCaseSensitive(moveObj, "damage")->valueint;
+            move->attack_bonus = cJSON_GetObjectItemCaseSensitive(moveObj, "attack_bonus")->valueint;
+            move->defense_bonus = cJSON_GetObjectItemCaseSensitive(moveObj, "defense_bonus")->valueint;
+            move->evasion_bonus = cJSON_GetObjectItemCaseSensitive(moveObj, "evasion_bonus")->valueint;
+            supemon->moves[j] = move;
+        }
+
         player->supemons[i] = supemon;
     }
     
